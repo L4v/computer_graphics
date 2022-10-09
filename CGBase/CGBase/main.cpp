@@ -1,5 +1,5 @@
 /**
- * @file gallery.cpp
+ * @file main.cpp
  * @author Jovan Ivosevic
  * @brief Base project for Computer Graphics course
  * @version 0.1
