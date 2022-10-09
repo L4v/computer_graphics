@@ -1,13 +1,16 @@
 # Computer Graphics
 Computer Graphics course material for the Faculty of Technical Sciences.
 
-The base code is on the master branch. Each week's material has it's own branch.
-
 ## Table of Contents
+  - [Branches](#branches)
   - [Installation and setup](#installation-and-setup)
     - [Windows](#windows)
       - [GiM starter project](#gim-starter-project)
       - [Creating your own project](#creating-your-own-project)
+
+## Branches
+- base: Contains the base code which can be expanded upon for projects and learning
+- week-x: Contains x week's material
 
 ## Installation and setup
 ### Windows
