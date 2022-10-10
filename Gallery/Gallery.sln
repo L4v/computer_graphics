@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Gallery", "Gallery\Gallery.vcxproj", "{FD40E9BD-E6D1-4EC1-8682-06D4CC69171E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FD40E9BD-E6D1-4EC1-8682-06D4CC69171E}.Debug|x64.ActiveCfg = Debug|x64
+		{FD40E9BD-E6D1-4EC1-8682-06D4CC69171E}.Debug|x64.Build.0 = Debug|x64
+		{FD40E9BD-E6D1-4EC1-8682-06D4CC69171E}.Debug|x86.ActiveCfg = Debug|Win32
+		{FD40E9BD-E6D1-4EC1-8682-06D4CC69171E}.Debug|x86.Build.0 = Debug|Win32
+		{FD40E9BD-E6D1-4EC1-8682-06D4CC69171E}.Release|x64.ActiveCfg = Release|x64
+		{FD40E9BD-E6D1-4EC1-8682-06D4CC69171E}.Release|x64.Build.0 = Release|x64
+		{FD40E9BD-E6D1-4EC1-8682-06D4CC69171E}.Release|x86.ActiveCfg = Release|Win32
+		{FD40E9BD-E6D1-4EC1-8682-06D4CC69171E}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B41F4B1B-FEA8-4866-8A27-02EF55B140BF}
+	EndGlobalSection
+EndGlobal
