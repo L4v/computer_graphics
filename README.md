@@ -17,7 +17,8 @@ Computer Graphics course material for the Faculty of Technical Sciences.
 If you want to use a project with preinstalled packages, you can use the starter project with  all the required libraries already setup.
 #### GiM starter project
 - From [GiM](http://gim.ftn.uns.ac.rs) download the starter project for your course
-- Open it in Visual Studio and you're set to go! No further setup required
+- Open it in Visual Studio and check your NuGet packages, you might have to reinstall them if you're getting build errors
+- After that you're set to go! No further setup required
 #### Creating your own project
 - Create a new C++ console app in Visual Studio
 - With your project's .cpp file open, click on "Project" in toolbar
