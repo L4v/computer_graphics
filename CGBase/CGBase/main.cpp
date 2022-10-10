@@ -14,7 +14,7 @@
 
 const int WindowWidth = 800;
 const int WindowHeight = 600;
-const std::string WindowTitle = "Gallery";
+const std::string WindowTitle = "Base";
 
 /**
  * @brief Error callback function for GLFW. See GLFW docs for details
@@ -28,7 +28,6 @@ ErrorCallback(int error, const char* description) {
 }
 
 int main() {
-
     GLFWwindow* Window = 0;
     if (!glfwInit()) {
         std::cerr << "Failed to init glfw" << std::endl;
@@ -39,7 +38,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    Window = glfwCreateWindow(800, 600, "Gallery", 0, 0);
+    Window = glfwCreateWindow(WindowWidth, WindowHeight, WindowTitle.c_str(), 0, 0);
     if (!Window) {
         std::cerr << "Failed to create window" << std::endl;
         glfwTerminate();
