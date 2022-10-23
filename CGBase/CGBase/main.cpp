@@ -8,12 +8,12 @@
  * @copyright Copyright (c) 2022
  *
  */
-#include "include/glad/glad.h"
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
 
 const int WindowWidth = 800;
-const int WindowHeight = 600;
+const int WindowHeight = 800;
 const std::string WindowTitle = "Base";
 
 /**
@@ -44,22 +44,27 @@ int main() {
         glfwTerminate();
         return -1;
     }
+    glfwMakeContextCurrent(Window);
+
+    GLenum GlewError = glewInit();
+    if (GlewError != GLEW_OK) {
+        std::cerr << "Failed to init glew: " << glewGetErrorString(GlewError) << std::endl;
+        glfwTerminate();
+        return -1;
+    }
 
     glfwSetErrorCallback(ErrorCallback);
-    glfwMakeContextCurrent(Window);
-    gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
     while (!glfwWindowShouldClose(Window)) {
         glfwPollEvents();
         glClear(GL_COLOR_BUFFER_BIT);
 
-
+        // TODO(Jovan): Draw code goes here
 
         glfwSwapBuffers(Window);
     }
 
     glfwTerminate();
-
     return 0;
 }
 
