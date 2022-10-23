@@ -5,7 +5,7 @@ Computer Graphics course material for the Faculty of Technical Sciences.
 - [Computer Graphics](#computer-graphics)
 	- [Table of Contents](#table-of-contents)
 	- [Branches](#branches)
-	- [Used packages](#used-packages)
+	- [Environment](#environment)
 	- [Installation and setup](#installation-and-setup)
 		- [Windows](#windows)
 			- [GiM starter project](#gim-starter-project)
@@ -15,8 +15,8 @@ Computer Graphics course material for the Faculty of Technical Sciences.
 - base: Contains the base code which can be expanded upon for projects and learning
 - week-x: Contains x week's material
 
-## Used packages
-> Note: If you wish to use other libraries, consult with your TA.
+## Environment
+> Note: If you wish to use other libraries, consult with Jovan Ivošević at ivosevic.jovan@uns.ac.rs.
 - GLFW
 - GLEW
 - GLM
