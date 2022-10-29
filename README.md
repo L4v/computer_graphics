@@ -10,6 +10,10 @@ Computer Graphics course material for the Faculty of Technical Sciences.
 		- [Windows](#windows)
 			- [GiM starter project](#gim-starter-project)
 			- [Creating your own project](#creating-your-own-project)
+	- [Linux](#linux)
+		- [Arch based](#arch-based)
+		- [Debian based](#debian-based)
+		- [Compiling and running](#compiling-and-running)
 
 ## Branches
 - base: Contains the base code which can be expanded upon for projects and learning
@@ -41,3 +45,29 @@ If you want to use a project with preinstalled packages, you can use the starter
 - In the same manner install the following NuGet packages:
 	- glew-2.2.0 by NerdTronik
 	- glm by GLM contributors (versions 0.9.9.800 and higher)
+## Linux
+Packages might differ depending on your distro, if not listed, contact ivosevic.jovan@uns.ac.rs to update.
+- Create a folder for your code (you can use the .cpp and .hpp files from the repo)
+### Arch based
+> Manjaro, EndeavourOS, etc...
+
+- To install GLM, GLFW and GLEW:
+```bash
+sudo pacman -S glm glfw glew
+```
+### Debian based
+> Ubuntu, Pop, Deepin, Kali
+
+```bash
+sudo apt install libglfw3 libglfw3-dev libglm-dev libglew-dev
+```
+
+### Compiling and running
+You can use make, cmake or any other build tool, but for most purposes this command will suffice:
+```bash
+# To compile (run this command inside your code dir, where all the .cpp and .hpp files are). NOTE: pkg-config is surrounded by backticks `, not by quotes '
+g++ -o <your_program_name> *.cpp `pkg-config --libs glfw3 glew` -ldl
+# To run
+./<your_program_name>
+```
+You can paste this code into a .sh file, e.g.: build.sh and run `chmod +x build.sh` only once in order to make it runnable, then to run it just type: `./build.sh` 
