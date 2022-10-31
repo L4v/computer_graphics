@@ -54,7 +54,7 @@ int main() {
         return -1;
     }
 
-    ShaderProgram BasicProgram("basic.vert", "basic.frag");
+    Shader BasicProgram("basic.vert", "basic.frag");
 
     // TODO|TASK: Change to a square
     float TriangleVertices[] = {
@@ -81,7 +81,7 @@ int main() {
         glfwPollEvents();
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(BasicProgram);
+        glUseProgram(BasicProgram.mId);
         glBindVertexArray(VAO);
         glDrawArrays(GL_TRIANGLES, 0, 3);
 
