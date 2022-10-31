@@ -6,27 +6,14 @@
  * @copyright Copyright (c) 2022
  *
  */
-#include "include/glad/glad.h"
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "shader.hpp"
 
 const int WindowWidth = 800;
 const int WindowHeight = 600;
 const std::string WindowTitle = "Triangle";
-
-const std::string VertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-    "}\0";
-
-const std::string FragmentShaderSource = "#version 330 core\n"
-    "out vec4 FragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
-    "}\n\0";
 
 /**
  * @brief Error callback function for GLFW. See GLFW docs for details
@@ -59,41 +46,15 @@ int main() {
 
     glfwSetErrorCallback(ErrorCallback);
     glfwMakeContextCurrent(Window);
-    gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-    // TODO|TASK: Move out shader program compilation into separate function / class
-    unsigned VertexShader = glCreateShader(GL_VERTEX_SHADER);
-    const char* VertexShaderSourceC_Str = VertexShaderSource.c_str();
-    glShaderSource(VertexShader, 1, &VertexShaderSourceC_Str, NULL);
-    glCompileShader(VertexShader);
-    int Success;
-    char InfoLog[512];
-    glGetShaderiv(VertexShader, GL_COMPILE_STATUS, &Success);
-    if (!Success) {
-        glGetShaderInfoLog(VertexShader, 512, NULL, InfoLog);
-        std::cerr << "Error compiling Vertex shader " << InfoLog << std::endl;
+    GLenum GlewError = glewInit();
+    if (GlewError != GLEW_OK) {
+        std::cerr << "Failed to init GLEW: " << glewGetErrorString(GlewError);
+        glfwTerminate();
+        return -1;
     }
 
-    unsigned FragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-    const char* FragmentShaderSourceC_Str = FragmentShaderSource.c_str();
-    glShaderSource(FragmentShader, 1, &FragmentShaderSourceC_Str, NULL);
-    glGetShaderiv(FragmentShader, GL_COMPILE_STATUS, &Success);
-    if (!Success) {
-        glGetShaderInfoLog(FragmentShader, 512, NULL, InfoLog);
-        std::cerr << "Error compiling Fragment shader " << InfoLog << std::endl;
-    }
-
-    unsigned int BasicProgram = glCreateProgram();
-    glAttachShader(BasicProgram, VertexShader);
-    glAttachShader(BasicProgram, FragmentShader);
-    glLinkProgram(BasicProgram);
-    glGetProgramiv(BasicProgram, GL_LINK_STATUS, &Success);
-    if (!Success) {
-        glGetProgramInfoLog(BasicProgram, 512, NULL, InfoLog);
-        std::cerr << "Error linking Shader Program " << InfoLog << std::endl;
-    }
-    glDeleteShader(VertexShader);
-    glDeleteShader(FragmentShader);
+    ShaderProgram BasicProgram("basic.vert", "basic.frag");
 
     // TODO|TASK: Change to a square
     float TriangleVertices[] = {
