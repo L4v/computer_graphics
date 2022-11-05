@@ -7,25 +7,12 @@
 #include "math3d.hpp"
 #include "texture.hpp"
 
-struct Light {
-    float Size;
-    float Kc;
-    float Kl;
-    float Kq;
-
-    v3 Position;
-    v3 Ambient;
-    v3 Diffuse;
-    v3 Specular;
-};
-
 class Shader {
 public:
     unsigned mId;
 
     Shader(const std::string& vShaderPath, const std::string& fShaderPath);
     Shader(const std::string& vShaderPath, const std::string& gShaderPath, const std::string& fShaderPath);
-    void SetPointLight(const Light& light, unsigned index);
     void SetUniform1i(const std::string& uniform, int i) const;
     void SetUniform1f(const std::string& uniform, float f) const;
     void SetUniform2f(const std::string& uniform, const glm::vec2& v) const;
@@ -38,9 +25,6 @@ public:
     void SetView(const glm::mat4& m) const;
     void SetProjection(const glm::mat4& m) const;
     void SetMVP(const glm::mat4& m, const glm::mat4& v, const glm::mat4& p) const;
-    void BindTexture(const std::string& uniform, unsigned unitIdx, GLenum target, Texture& texture) const;
-    void BindDiffuse(Texture& texture, GLenum unitIdx = 0) const;
-    void BindSpecular(Texture& texture, GLenum unitIdx = 0) const;
 private:
     unsigned loadAndCompileShader(std::string filename, GLuint shaderType);
     unsigned createBasicProgram(unsigned vShader, unsigned fShader);

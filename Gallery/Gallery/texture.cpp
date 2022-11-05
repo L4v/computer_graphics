@@ -3,8 +3,8 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "include/stb_image.h"
 
-Texture::Texture(const std::string& path)
-    : mPath(path), mScale(8.0f) {
+Texture::Texture(const std::string& path, Type type, float scale)
+    : mPath(path), mType(type), mScale(scale) {
     std::replace(mPath.begin(), mPath.end(), '\\', '/');
     glGenTextures(1, &mId);
     int Width, Height, Channels;
@@ -54,4 +54,9 @@ Texture::GetScale() const {
 unsigned
 Texture::GetId() const {
     return mId;
+}
+
+Texture::Type
+Texture::GetType() const {
+    return mType;
 }

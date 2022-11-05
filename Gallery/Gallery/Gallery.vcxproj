@@ -144,6 +144,8 @@
     <ClCompile Include="buffer.cpp" />
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="model.cpp" />
+    <ClCompile Include="phongshader.cpp" />
     <ClCompile Include="quad.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="texture.cpp" />
@@ -157,6 +159,8 @@
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="irenderobject.hpp" />
     <ClInclude Include="math3d.hpp" />
+    <ClInclude Include="model.hpp" />
+    <ClInclude Include="phongshader.hpp" />
     <ClInclude Include="quad.hpp" />
     <ClInclude Include="shader.hpp" />
     <ClInclude Include="texture.hpp" />
@@ -166,6 +170,8 @@
     <Import Project="..\packages\glfw.3.3.8\build\native\glfw.targets" Condition="Exists('..\packages\glfw.3.3.8\build\native\glfw.targets')" />
     <Import Project="..\packages\glm.0.9.9.800\build\native\glm.targets" Condition="Exists('..\packages\glm.0.9.9.800\build\native\glm.targets')" />
     <Import Project="..\packages\glew-2.2.0.2.2.0.1\build\native\glew-2.2.0.targets" Condition="Exists('..\packages\glew-2.2.0.2.2.0.1\build\native\glew-2.2.0.targets')" />
+    <Import Project="..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets" Condition="Exists('..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" />
+    <Import Project="..\packages\Assimp.3.0.0\build\native\Assimp.targets" Condition="Exists('..\packages\Assimp.3.0.0\build\native\Assimp.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -174,5 +180,7 @@
     <Error Condition="!Exists('..\packages\glfw.3.3.8\build\native\glfw.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glfw.3.3.8\build\native\glfw.targets'))" />
     <Error Condition="!Exists('..\packages\glm.0.9.9.800\build\native\glm.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glm.0.9.9.800\build\native\glm.targets'))" />
     <Error Condition="!Exists('..\packages\glew-2.2.0.2.2.0.1\build\native\glew-2.2.0.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\glew-2.2.0.2.2.0.1\build\native\glew-2.2.0.targets'))" />
+    <Error Condition="!Exists('..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Assimp.redist.3.0.0\build\native\Assimp.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\Assimp.3.0.0\build\native\Assimp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Assimp.3.0.0\build\native\Assimp.targets'))" />
   </Target>
 </Project>

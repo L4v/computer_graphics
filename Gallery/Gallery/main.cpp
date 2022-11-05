@@ -18,10 +18,12 @@
 #include <glm/gtx/string_cast.hpp>
 #include <string>
 #include "shader.hpp"
+#include "phongshader.hpp"
 #include "cube.hpp"
 #include "quad.hpp"
 #include "buffer.hpp"
 #include "texture.hpp"
+#include "model.hpp"
 
 #define ArrayCount(a) (sizeof(a) / sizeof((a)[0]))
 #define G 9.81f
@@ -29,31 +31,6 @@
 int WindowWidth = 800;
 int WindowHeight = 800;
 const std::string WindowTitle = "Gallery";
-
-class PointLight {
-public:
-    glm::vec3 mPosition;
-
-    glm::vec3 mKa;
-    glm::vec3 mKd;
-    glm::vec3 mKs;
-
-    float       mKc;
-    float       mKl;
-    float       mKq;
-
-    PointLight(const glm::vec3& position, glm::vec3 ka, glm::vec3 kd, glm::vec3 ks) {
-        mPosition = position;
-        mKa = ka;
-        mKd = kd;
-        mKs = ks;
-
-        mKc = 1.0f;
-        mKl = 0.022f;
-        mKq = 0.0019f;
-    }
-
-};
 
 class Camera {
 public:
@@ -76,7 +53,7 @@ public:
     glm::vec3 mVelocity;
 
     float mMoveSpeed;
-    float mRotateSpeed;
+    float mLookSpeed;
     float mPitch;
     float mYaw;
     float mPlayerHeight; // Should be moved out
@@ -88,8 +65,8 @@ public:
         mVelocity = glm::vec3(0.0f);
         mPitch = 0.0f;
         mYaw = -90.0f;
-        mMoveSpeed = 32.0f;
-        mRotateSpeed = 200.0f;
+        mMoveSpeed = 16.0f;
+        mLookSpeed = 100.0f;
         mProjection = glm::mat4(1.0f);
         mView = glm::mat4(1.0f);
         mPlayerHeight = 2.0f;
@@ -124,7 +101,7 @@ public:
     }
 
     void Rotate(float dx, float dy, float dt) {
-        float RotateVelocity = mRotateSpeed * dt;
+        float RotateVelocity = mLookSpeed * dt;
         mYaw += dx * RotateVelocity;
         mPitch += dy * RotateVelocity;
 
@@ -299,7 +276,12 @@ int main() {
     EngineState State(&FPSCamera);
     glfwSetWindowUserPointer(Window, &State);
 
-    Shader Phong("shaders/basic.vert", "shaders/basic.frag");
+    PhongShader Phong("shaders/basic.vert", "shaders/basic.frag");
+    Shader Network("shaders/basic.vert", "shaders/network.frag");
+    Shader Warping("shaders/basic.vert", "shaders/warping.frag");
+    Shader Mazeflow("shaders/basic.vert", "shaders/mazeflow.frag");
+    Shader Voronoise("shaders/basic.vert", "shaders/voronoise.frag");
+    Shader Ashanoha("shaders/basic.vert", "shaders/ashanoha.frag");
 
     float StartTime = glfwGetTime();
     float EndTime = glfwGetTime();
@@ -309,27 +291,19 @@ int main() {
     Buffer CubeBuffer(CubeObject);
     Buffer QuadBuffer(QuadObject);
 
+    // NOTE(Jovan): Should've been a museum piece...
+    Model Amongus("res/models/amongus.obj");
+    Amongus.Load();
 
-    Texture FloorTexture("res/images/Marble_Tiles_001_basecolor.jpg");
-    Texture WallTexture("res/images/Marble_Blue_004_basecolor.jpg");
+    Texture FloorTexture("res/images/Marble_Tiles_001_basecolor.jpg", Texture::DIFFUSE, 16.0f);
+    Texture WallTexture("res/images/Marble_Blue_004_basecolor.jpg", Texture::DIFFUSE, 8.0f);
 
     glUseProgram(Phong.mId);
-    std::vector<PointLight*> PointLights;
-    PointLights.push_back(new PointLight(glm::vec3(0.0f, 2.0f, -15.8f), glm::vec3(0.0f, 0.0f, 0.2f), glm::vec3(0.0f, 0.0f, 0.5f), glm::vec3(0.0f, 0.0f, 0.8f)));
-    PointLights.push_back(new PointLight(glm::vec3(-15.8f, 2.0f, 0.0f), glm::vec3(0.2f, 0.1f, 0.0f), glm::vec3(0.5f, 0.4f, 0.0f), glm::vec3(0.8f, 0.7f, 0.0f)));
-    PointLights.push_back(new PointLight(glm::vec3(15.8f, 2.0f, 0.0f), glm::vec3(0.2f, 0.1f, 0.0f), glm::vec3(0.5f, 0.4f, 0.0f), glm::vec3(0.8f, 0.7f, 0.0f)));
-    PointLights.push_back(new PointLight(glm::vec3(0.0f, 2.0f, 15.8f), glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(0.8f)));
-    PointLights.push_back(new PointLight(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(0.8f)));
-    for (unsigned LightIdx = 0; LightIdx < PointLights.size(); ++LightIdx) {
-        Phong.SetUniform3f("uPointLights[" + std::to_string(LightIdx) + "].Position", PointLights[LightIdx]->mPosition);
-        Phong.SetUniform3f("uPointLights[" + std::to_string(LightIdx) + "].Ka", PointLights[LightIdx]->mKa);
-        Phong.SetUniform3f("uPointLights[" + std::to_string(LightIdx) + "].Kd", PointLights[LightIdx]->mKd);
-        Phong.SetUniform3f("uPointLights[" + std::to_string(LightIdx) + "].Ks", PointLights[LightIdx]->mKs);
-        Phong.SetUniform1f("uPointLights[" + std::to_string(LightIdx) + "].Kc", PointLights[LightIdx]->mKc);
-        Phong.SetUniform1f("uPointLights[" + std::to_string(LightIdx) + "].Kl", PointLights[LightIdx]->mKl);
-        Phong.SetUniform1f("uPointLights[" + std::to_string(LightIdx) + "].Kq", PointLights[LightIdx]->mKq);
-    }
-    Phong.SetUniform1i("uPointLightCount", PointLights.size());
+    Phong.AddPointLight(PointLight(glm::vec3(0.0f, 2.0f, -15.8f), glm::vec3(0.0f, 0.0f, 0.2f), glm::vec3(0.0f, 0.0f, 0.5f), glm::vec3(0.0f, 0.0f, 0.8f)));
+    Phong.AddPointLight(PointLight(glm::vec3(-15.8f, 2.0f, 0.0f), glm::vec3(0.2f, 0.1f, 0.0f), glm::vec3(0.5f, 0.4f, 0.0f), glm::vec3(0.8f, 0.7f, 0.0f)));
+    Phong.AddPointLight(PointLight(glm::vec3(15.8f, 2.0f, 0.0f), glm::vec3(0.2f, 0.1f, 0.0f), glm::vec3(0.5f, 0.4f, 0.0f), glm::vec3(0.8f, 0.7f, 0.0f)));
+    Phong.AddPointLight(PointLight(glm::vec3(0.0f, 2.0f, 15.8f), glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(0.8f)));
+    Phong.AddPointLight(PointLight(glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(0.8f)));
     
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
@@ -350,7 +324,8 @@ int main() {
         Model = glm::translate(Model, glm::vec3(0.0f, 2.0f, -3.0f));
         Model = glm::rotate(Model, glm::radians(angle), glm::vec3(1.0f));
         Phong.SetMVP(Model, State.mCamera->mView, State.mCamera->mProjection);
-        Phong.BindDiffuse(WallTexture);
+        Phong.SetViewPosition(State.mCamera->mPosition);
+        Phong.BindTexture(WallTexture);
         CubeBuffer.Render();
 
         // NOTE(Jovan): South wall
@@ -382,7 +357,73 @@ int main() {
             Phong.SetModel(Model);
             CubeBuffer.Render();
         }
-        
+
+        // NOTE(Jovan): Floor
+        Model = glm::mat4(1.0f);
+        Model = glm::translate(Model, glm::vec3(0.0f, -0.5f, 0.0f));
+        Model = glm::scale(Model, glm::vec3(32.0f, 1.0f, 32.0f));
+        Model = glm::rotate(Model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        Phong.SetModel(Model);
+        Phong.BindTexture(FloorTexture);
+        CubeBuffer.Render();
+
+        Model = glm::mat4(1.0f);
+        Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, 0.0f));
+        Model = glm::scale(Model, glm::vec3(0.008f));
+        Phong.SetModel(Model);
+        Amongus.Render(Phong);
+
+        // NOTE(Jovan): Paintings
+        // NOTE(Jovan): Ashanoha "painting"
+        glUseProgram(Ashanoha.mId);
+        Model = glm::mat4(1.0f);
+        Model = glm::translate(Model, glm::vec3(0.0f, 4.0f, -15.9f));
+        Model = glm::scale(Model, glm::vec3(12.0f, 6.0f, 0.1f));
+        Ashanoha.SetUniform1f("uTime", glfwGetTime());
+        Warping.SetUniform2f("uResolution", glm::vec2(12, 6));
+        Ashanoha.SetMVP(Model, State.mCamera->mView, State.mCamera->mProjection);
+        CubeBuffer.Render();
+
+        // NOTE(Jovan): Warping "painting"
+        glUseProgram(Warping.mId);
+        Model = glm::mat4(1.0f);
+        Model = glm::translate(Model, glm::vec3(-15.9f, 4.0f, 0.0f));
+        Model = glm::scale(Model, glm::vec3(0.1f, 6.0f, 12.0f));
+        Warping.SetUniform1f("uTime", glfwGetTime());
+        Warping.SetUniform2f("uResolution", glm::vec2(12, 6));
+        Warping.SetMVP(Model, State.mCamera->mView, State.mCamera->mProjection);
+        CubeBuffer.Render();
+
+        // NOTE(Jovan): Mazeflow "painting"
+        glUseProgram(Mazeflow.mId);
+        Model = glm::mat4(1.0f);
+        Model = glm::translate(Model, glm::vec3(15.9f, 4.0f, 0.0f));
+        Model = glm::scale(Model, glm::vec3(0.1f, 6.0f, 12.0f));
+        Mazeflow.SetUniform1f("uTime", glfwGetTime());
+        Mazeflow.SetUniform2f("uResolution", glm::vec2(12, 6));
+        Mazeflow.SetMVP(Model, State.mCamera->mView, State.mCamera->mProjection);
+        CubeBuffer.Render();
+
+        // NOTE(Jovan): Voronoise "painting"
+        glUseProgram(Voronoise.mId);
+        Model = glm::mat4(1.0f);
+        Model = glm::translate(Model, glm::vec3(0.0f, 4.0f, 15.9f));
+        Model = glm::scale(Model, glm::vec3(12.0f, 6.0f, 0.1f));
+        Voronoise.SetUniform1f("uTime", glfwGetTime());
+        Voronoise.SetUniform2f("uResolution", glm::vec2(12, 6));
+        Voronoise.SetMVP(Model, State.mCamera->mView, State.mCamera->mProjection);
+        CubeBuffer.Render();
+
+        // NOTE(Jovan): Network "painting"
+        glUseProgram(Network.mId);
+        Model = glm::mat4(1.0f);
+        Model = glm::translate(Model, glm::vec3(0.0f, 8.1f, 0.0f));
+        Model = glm::scale(Model, glm::vec3(32.0f, 0.1f, 32.0f));
+        Network.SetUniform1f("uTime", glfwGetTime());
+        Network.SetUniform2f("uResolution", glm::vec2(16, 16));
+        Network.SetMVP(Model, State.mCamera->mView, State.mCamera->mProjection);
+        CubeBuffer.Render();
+
         glUseProgram(0);
 
         glfwSwapBuffers(Window);

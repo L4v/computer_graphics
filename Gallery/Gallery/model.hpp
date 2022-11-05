@@ -1,0 +1,71 @@
+#ifndef MESH_H
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <algorithm>
+#include <vector>
+#include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include "phongshader.hpp"
+#include "irenderobject.hpp"
+
+
+#define POSITION_LOCATION 0
+#define TEX_COORD_LOCATION 1
+#define NORMAL_LOCATION 2
+
+#define POSTPROCESS_FLAGS (aiProcess_Triangulate | aiProcess_FlipUVs)
+#define INVALID_MATERIAL 0xFFFFFFFF
+
+enum EBufferType {
+    INDEX_BUFFER = 0,
+    POS_VB = 1,
+    TEXCOORD_VB = 2,
+    NORM_VB = 3,
+    BUFFER_COUNT = 4,
+};
+
+struct MeshInfo {
+    std::vector<Texture>  mTextures;
+    unsigned                   mNumIndices;
+    unsigned                   mBaseVertex;
+    unsigned                   mBaseIndex;
+    unsigned                   mMaterialIndex;
+
+    MeshInfo();
+    void LoadTextures(aiMaterial *material, Texture::Type type, const std::string &dir);
+
+};
+
+class Model {
+private:
+    std::vector<glm::vec3> mPositions;
+    std::vector<glm::vec2> mTexCoords;
+    std::vector<glm::vec3> mNormals;
+    std::vector<unsigned> mIndices;
+    std::vector<MeshInfo> mMeshes;
+    std::vector<Texture*> mTextures;
+    std::vector<GLuint> mBuffers;
+    unsigned mVAO;
+    unsigned mNumVertices;
+    unsigned mNumIndices;
+
+public:
+    std::string mFilename;
+    std::string mDirectory;
+    glm::mat4 mModel;
+    glm::vec3 mPosition;
+    glm::vec3 mRotation;
+    glm::vec3 mScale;
+
+    Model(std::string filename);
+    bool Load();
+    void ProcessMesh(const aiScene *scene, const aiMesh *mesh, unsigned meshIdx);
+    void Render(const PhongShader &program);
+
+};
+
+#define MESH_HP
+#endif

@@ -100,17 +100,6 @@ Shader::createBasicProgram(unsigned vShader, unsigned gShader, unsigned fShader)
 }
 
 void
-Shader::SetPointLight(const Light& light, unsigned index) {
-    SetUniform3f("uPointLights[0].Ambient", light.Ambient);
-    SetUniform3f("uPointLights[0].Diffuse", light.Diffuse);
-    SetUniform3f("uPointLights[0].Specular", light.Specular);
-    SetUniform3f("uPointLights[0].Position", light.Position);
-    SetUniform1f("uPointLights[0].Kc", light.Kc);
-    SetUniform1f("uPointLights[0].Kl", light.Kl);
-    SetUniform1f("uPointLights[0].Kq", light.Kq);
-}
-
-void
 Shader::SetUniform1i(const std::string& uniform, int i) const {
     glUniform1i(glGetUniformLocation(mId, uniform.c_str()), i);
 }
@@ -169,21 +158,4 @@ Shader::SetUniform4m(const std::string& uniform, const std::vector<m44>& m, GLbo
 void
 Shader::SetUniform4m(const std::string& uniform, const glm::mat4& m) const {
     glUniformMatrix4fv(glGetUniformLocation(mId, uniform.c_str()), 1, GL_FALSE, &m[0][0]);
-}
-
-void
-Shader::BindTexture(const std::string& uniform, unsigned unitIdx, GLenum target, Texture& texture) const {
-    glActiveTexture(GL_TEXTURE0 + unitIdx);
-    SetUniform1i(uniform, unitIdx);
-    SetUniform1f("uTexScale", texture.GetScale());
-    glBindTexture(target, texture.GetId());
-}
-void
-Shader::BindDiffuse(Texture& texture, GLenum unitIdx) const {
-    BindTexture("uDiffuse", unitIdx, GL_TEXTURE_2D, texture);
-}
-
-void
-Shader::BindSpecular(Texture& texture, GLenum unitIdx) const {
-    BindTexture("uSpecular", unitIdx, GL_TEXTURE_2D, texture);
 }
