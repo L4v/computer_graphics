@@ -9,7 +9,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "phongshader.hpp"
-#include "irenderobject.hpp"
+#include "mesh.hpp"
+#include "buffer.hpp"
 
 
 #define POSITION_LOCATION 0
@@ -27,27 +28,10 @@ enum EBufferType {
     BUFFER_COUNT = 4,
 };
 
-struct MeshInfo {
-    std::vector<Texture>  mTextures;
-    unsigned                   mNumIndices;
-    unsigned                   mBaseVertex;
-    unsigned                   mBaseIndex;
-    unsigned                   mMaterialIndex;
-
-    MeshInfo();
-    void LoadTextures(aiMaterial *material, Texture::Type type, const std::string &dir);
-
-};
-
 class Model {
 private:
-    std::vector<glm::vec3> mPositions;
-    std::vector<glm::vec2> mTexCoords;
-    std::vector<glm::vec3> mNormals;
-    std::vector<unsigned> mIndices;
-    std::vector<MeshInfo> mMeshes;
-    std::vector<Texture*> mTextures;
-    std::vector<GLuint> mBuffers;
+    std::vector<Mesh> mMeshes;
+    std::vector<Buffer> mMeshBuffers;
     unsigned mVAO;
     unsigned mNumVertices;
     unsigned mNumIndices;

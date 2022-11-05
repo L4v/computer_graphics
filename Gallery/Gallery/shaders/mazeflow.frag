@@ -1,470 +1,510 @@
 #version 330 core
+// NOTE(Jovan): Taken from ShaderToy, all credits to original creator
+// https://www.shadertoy.com/view/llGGzh
 /*
 
-	Hexagonal Maze Flow
-	-------------------
+    Maze Lattice
+    ------------
 
-	I've been playing around with hexagonal grids lately. It's possible to make all kinds of
-	interesting things with them. I'll eventually tire of hexagons and get back to what I'm 
-	supposed to be doing, but for now, here's a maze with a flowing polkadot snake-like
-	pattern running through it... I'm not really sure what it is either. :)
+	Applying a geometric pattern and edging to Fizzer's maze lattice. I'm not sure what he technically 
+	calls it, but it has a lattice feel, and as he infers in his article, it's a 3D structure with 
+	maze-like qualities. Either way, I particularly like it because it's cleverly constructed, interesting 
+	looking, and very cheap to produce. Basically, it's one of those distance fields that gives you your 
+	money's worth. :)
 
-	It has an impossible geometry feel to it, and is rendered in an oldschool kind of game
-	style. It was pretty easy to produce: Obtain some hexagonal grid cell coordinates and 
-	corresponding ID, render some lines, shapes, and a few arcs for the Truchet component,
-	apply some shading, etc.
+	The only interesting thing here is the distance field equation that contains the maze-like lattice. I've 
+	given a rough explanation behind its construction, but it's much better to read Fizzer's well explained 
+	article, which I've provided a link to below.
+
+	The geometric surfacing pattern is a 2D hexagonal Truchet design, which is applied to each of the flat 
+    face sections in accordance to the surface normal orientation. It's a standard way to apply 2D patterns 
+	to a cuboid-based surface, and is contained in the "texFaces" function.
+
+	I used an edging algorithm to obtain the edges, which involves extra distance function and bump calls. 
+	I've since thought of a better way to make that happen which will cut down on cost and complexity, so 
+	I'll apply that in due course.
+
+	Anyway, I have a reflection\refraction version, based on the same surface that I'll release later.
 	
-	It was more of an exercise in applying layers in the right order than anything else. One 
-	of the things that might be of interest is the flowing Truchet pattern. Producing a 
-	flowing hexagonal Truchet isn't much different to producing a square one. In fact, it's
-	easier - in the sense that you don't have to reverse directions from cell to cell. 
+	Distance field based on the article accompanying the following:
+	Maze Explorer - fizzer
+    https://www.shadertoy.com/view/XsdGzM
 
-	However, one of the downsides is that it's not immediately obvious how to apply UV 
-	coordinates - I think BigWings mentioned this, and I concur. :) I got around the problem
-	by ensuring that the texture pattern had the appropriate symmetry and applying hybrid 
-	polar coordinates. By that, I mean, I wrapped the polar angles across the arc boundaries
-	and used that for one coordinate, then used the Truchet distance field itself for the 
-	other...
+	Accompanying article is here:
+	Implicit Maze-Like Patterns
+    http://amietia.com/slashmaze.html
 
-    Roughly speaking, it's not much different to a circle: In that situation, you use the 
-	familiar polar coordinates (r = length(u), a = atan(u.y, u.x)). The only difference in 
-	this case is that you use a modified radial coordinate (r = min(min(r1, r2), r3)) - or 
-	to put it another way, you use the distance field value... It's a bit difficult to 
-	explain, but easy to perform. When I get time, I'm going to produce a more robust Truchet 
-	texturing example.
-	
+	Truchet shaders:
 
-	Related references:
+    hexagonal truchet ( 352 ) - FabriceNeyret2
+    https://www.shadertoy.com/view/Xdt3D8
+ 
+    hexagonal tiling - mattz
+    https://www.shadertoy.com/view/4d2GzV
+    
 
-	// You can't do a hexagonal grid example without referencing this. :) Very stylish.
-	Hexagons - distance - iq
-	https://www.shadertoy.com/view/Xd2GR3
-	
-
-	// Simpler hexagonal grid example that attempts to explain the grid setup used to produce 
-	// the pattern here.
-	//
-	Minimal Hexagonal Grid - Shane
-	https://www.shadertoy.com/view/Xljczw
 
 */
 
-// Interlaced variation - Interesting, but patched together in a hurry.
-//#define INTERLACING
+// Maximum ray distance.
+#define FAR 40.
 
-// A quick hack to get rid of the winding overlay - in order to show the maze only.
-//#define MAZE_ONLY
-
-// NOTE(Jovan): Got from ShaderToy, all rights to creator
-
-uniform float uTime;
-uniform vec2  uResolution;
-
-// Helper vector. If you're doing anything that involves regular triangles or hexagons, the
-// 30-60-90 triangle will be involved in some way, which has sides of 1, sqrt(3) and 2.
-const vec2 s = vec2(1, 1.7320508);
-
-// Standard vec2 to float hash - Based on IQ's original.
-float hash21(vec2 p){ return fract(sin(dot(p, vec2(141.173, 289.927)))*43758.5453); }
-
-
-// Standard 2D rotation formula.
-mat2 r2(in float a){ float c = cos(a), s = sin(a); return mat2(c, -s, s, c); }
-
-
-// The 2D hexagonal isosuface function: If you were to render a horizontal line and one that
-// slopes at 60 degrees, mirror, then combine them, you'd arrive at the following.
-float hex(in vec2 p){
-    
-    p = abs(p);
-    
-    // Below is equivalent to:
-    //return max(p.x*.5 + p.y*.866025, p.x); 
-
-    return max(dot(p, s*.5), p.x); // Hexagon.
-    
-}
-
-// This function returns the hexagonal grid coordinate for the grid cell, and the corresponding 
-// hexagon cell ID - in the form of the central hexagonal point. That's basically all you need to 
-// produce a hexagonal grid.
+// I love this distance field. So elegant, and I can thank Fizzer for coming up with it.
+// The idea is about as simple as it gets. Break space into octahedrons then use each
+// otahedral cell to obtain a unique ID. Use that ID to render a randomly oriented square 
+// tube and you're done.
 //
-// When working with 2D, I guess it's not that important to streamline this particular function.
-// However, if you need to raymarch a hexagonal grid, the number of operations tend to matter.
-// This one has minimal setup, one "floor" call, a couple of "dot" calls, a ternary operator, etc.
-// To use it to raymarch, you'd have to double up on everything - in order to deal with 
-// overlapping fields from neighboring cells, so the fewer operations the better.
-vec4 getHex(vec2 p){
+// I've done a little trimming and shuffling, which probably confuses things slightly. 
+// Either way, it's worth reading the following article for a much clearer explanation:
+//
+// Implicit Maze-Like Patterns - Fizzer
+// http://amietia.com/slashmaze.html
+//
+float map(in vec3 p) {
     
-    // The hexagon centers: Two sets of repeat hexagons are required to fill in the space, and
-    // the two sets are stored in a "vec4" in order to group some calculations together. The hexagon
-    // center we'll eventually use will depend upon which is closest to the current point. Since 
-    // the central hexagon point is unique, it doubles as the unique hexagon ID.
-    vec4 hC = floor(vec4(p, p - vec2(.5, 1))/s.xyxy) + .5;
     
-    // Centering the coordinates with the hexagon centers above.
-    vec4 h = vec4(p - hC.xy*s, p - (hC.zw + .5)*s);
+   // Cubes, for a simpler, more orderly scene.
+   //p = abs(fract(p) - .5);    
+   //return max(max(p.x, p.y), p.z) - .225;
+   
+   // Unique identifier for the cube, but needs to be converted to a unique ID
+   // for the nearest octahedron. The extra ".5" is to save a couple of 
+   // of calculations. See below.
+   vec3 ip = floor(p) + .5;
     
-    // Nearest hexagon center (with respect to p) to the current point. In other words, when
-    // "h.xy" is zero, we're at the center. We're also returning the corresponding hexagon ID -
-    // in the form of the hexagonal central point. Note that a random constant has been added to 
-    // "hC.zw" to further distinguish it from "hC.xy."
+   p -= ip; // Break space into cubes. Equivalent to: fract(p) - .5.
+    
+   // Stepping trick used to identify faces in a cube. The center of the cube face also
+   // happens to be the center of the nearest octahedron, so that works out rather well. 
+   // The result needs to be factored a little (see the hash line), but it basically  
+   // provides a unique octahedral ID. Fizzer provided a visual of this, which is easier 
+   // to understand, and worth taking a look at.
+   vec3 q = abs(p); 
+   q = step(q.yzx, q.xyz)*step(q.zxy, q.xyz)*sign(p); // Used for cube mapping also.
+   
+   // Put the ID into a hash function to produce a unique random number. Reusing "q" to
+   // save declaring a float. Don't know if it's faster, but it looks neater, I guess.
+   q.x = fract(sin(dot(ip + q*.5, vec3(111.67, 147.31, 27.53)))*43758.5453);
+    
+   // Use the random number to orient a square tube in one of three random axial
+   // directions... See Fizzer's article explanation. It's better. :) By the way, it's
+   // possible to rewrite this in "step" form, but I don't know if it's quicker, so I'll
+   // leave it as is for now.
+   p.xy = abs(q.x>.333 ? q.x>.666 ? p.xz : p.yz : p.xy);
+   return max(p.x, p.y) - .2;   
+
+}
+
+// Very basic raymarching equation. I thought I might need to use something more sophisticated,
+// but it turns out that this structure raymarches reasonably well. Not all surfaces do.
+float trace(vec3 ro, vec3 rd){
+
+    float t = 0.0;
+    for(int i=0; i< 72; i++){
+        float d = map(ro + rd*t);
+        if (abs(d) < 0.002*(t*.125 + 1.) || t>FAR) break;
+        t += d;
+    } 
+    return min(t, FAR);
+}
+
+// The reflections are pretty subtle, so not much effort is being put into them. Only a few iterations.
+float refTrace(vec3 ro, vec3 rd){
+
+    float t = 0.0;
+    for(int i=0; i< 16; i++){
+        float d = map(ro + rd*t);
+        if (abs(d) < 0.005*(t*.25 + 1.) || t>FAR) break;
+        t += d;
+    } 
+    return t;
+}
+
+// The normal function with some edge detection rolled into it. Sometimes, it's possible to get away
+// with six taps, but we need a bit of epsilon value variance here, so there's an extra six.
+vec3 normal(in vec3 p, inout float edge) { 
+	
+    vec2 e = vec2(.034, 0); // Larger epsilon for greater sample spread, thus thicker edges.
+
+    // Take some distance function measurements from either side of the hit point on all three axes.
+	float d1 = map(p + e.xyy), d2 = map(p - e.xyy);
+	float d3 = map(p + e.yxy), d4 = map(p - e.yxy);
+	float d5 = map(p + e.yyx), d6 = map(p - e.yyx);
+	float d = map(p)*2.;	// The hit point itself - Doubled to cut down on calculations. See below.
+     
+    // Edges - Take a geometry measurement from either side of the hit point. Average them, then see how
+    // much the value differs from the hit point itself. Do this for X, Y and Z directions. Here, the sum
+    // is used for the overall difference, but there are other ways. Note that it's mainly sharp surface 
+    // curves that register a discernible difference.
+    edge = abs(d1 + d2 - d) + abs(d3 + d4 - d) + abs(d5 + d6 - d);
+    //edge = max(max(abs(d1 + d2 - d), abs(d3 + d4 - d)), abs(d5 + d6 - d)); // Etc.
+    
+    
+    // Once you have an edge value, it needs to normalized, and smoothed if possible. How you 
+    // do that is up to you. This is what I came up with for now, but I might tweak it later.
     //
-    // On a side note, I sometimes compare hex distances, but I noticed that Iomateron compared
-    // the Euclidian version, which seems neater, so I've adopted that.
-    return dot(h.xy, h.xy)<dot(h.zw, h.zw) ? vec4(h.xy, hC.xy) : vec4(h.zw, hC.zw + vec2(.5, 1));
+    edge = smoothstep(0., 1., sqrt(edge/e.x*8.));
     
+    // Curvature. All this, just to take out the inner edges.
+    float crv = (d1 + d2 + d3 + d4 + d5 + d6 - d*3.)/e.x;;
+    //crv = clamp(crv*32., 0., 1.);
+    if (crv<0.) edge = 0.; // Comment out to see what it does.
+
+	
+    // Redoing the calculations for the normal with a more precise epsilon value. If you can roll the 
+    // edge and normal into one, it saves a lot of map calls. Unfortunately, we want wide edges, so
+    // there are six more, making 12 map calls in all. Ouch! :)
+    e = vec2(.005, 0);
+	d1 = map(p + e.xyy), d2 = map(p - e.xyy);
+	d3 = map(p + e.yxy), d4 = map(p - e.yxy);
+	d5 = map(p + e.yyx), d6 = map(p - e.yyx); 
+    
+    // Return the normal.
+    // Standard, normalized gradient mearsurement.
+    return normalize(vec3(d1 - d2, d3 - d4, d5 - d6));
 }
 
-// Dot pattern.
-float dots(in vec2 p){
+// Ambient occlusion, for that self shadowed look.
+// XT95 came up with this particular version. Very nice.
+//
+// Hemispherical SDF AO - https://www.shadertoy.com/view/4sdGWN
+// Alien Cocoons - https://www.shadertoy.com/view/MsdGz2
+float calcAO( in vec3 p, in vec3 n )
+{
     
-	p = abs(fract(p) - .5);
+	float ao = 0.0, l;
+	const float nbIte = 12.0;
+	const float falloff = 1.;
     
-    return length(p); // Circles.
+    const float maxDist = 1.;
+    for( float i=1.; i< nbIte+.5; i++ ){
     
-    //return (p.x + p.y)/1.5 + .035; // Diamonds.
-    
-    //return max(p.x, p.y) + .03; // Squares.
-    
-    //return max(p.x*.866025 + p.y*.5, p.y) + .01; // Hexagons.
-    
-    //return min((p.x + p.y)*.7071, max(p.x, p.y)) + .08; // Stars.
-    
-    
-}
-
-
-// Distance field for the arcs. I think it's called poloidal rotation, or something like that.
-float dfPol(vec2 p){
-     
-    return length(p); // Circular arc.
-    
-    // There's no rule that says the arcs have to be rounded. Here's a hexagonal one.
-    //return hex(p);
-    
-    // Dodecahedron.
-    //return max(hex(p), hex(r2(3.14159/6.)*p));
-    
-    // Triangle.
-    //return max(abs(p.x)*.866025 - p.y, p.y);
-    
-}
-
-
-// Truchet pattern distance field.
-float df(vec2 p, float dir){
-     
-    // Weird UV coordinates. The first entry is the Truchet distance field itself,
-    // and the second is the polar angle of the arc pixel. The extra ".1" is just a bit
-    // of mutational scaling, or something... I can't actually remember why it's there. :)
-    vec2 uv = vec2(p.x + .1, p.y);//*vec2(1, 1); // Scaling.
-    
-    // A checkered dot pattern. At present the pattern needs to have flip symmetry about
-    // the center, but I'm pretty sure regular textures could be applied with a few
-    // minor changes. Due to the triangular nature of the Truchet pattern, factors of "3"
-    // were necessary, but factors of "1.5" seemed to work too. Hence the "4.5."
-    return min(dots(uv*4.5), dots(uv*4.5 + .5)) - .3;
-    
+        l = (i + fract(cos(i)*45758.5453))*.5/nbIte*maxDist;
+        ao += (l - map( p + n*l ))/ pow(1. + l, falloff);
+    }
+	
+    return clamp( 1. - ao*2./nbIte, 0., 1.);
 }
 
 
-// Polar coordinate of the arc pixel.
-float getPolarCoord(vec2 q, float dir){
+// Cheap shadows are hard. In fact, I'd almost say, shadowing repeat objects - in a setting like this - with limited 
+// iterations is impossible... However, I'd be very grateful if someone could prove me wrong. :)
+float softShadow(vec3 ro, vec3 lp, float k){
+
+    // More would be nicer. More is always nicer, but not really affordable... Not on my slow test machine, anyway.
+    const int maxIterationsShad = 16; 
     
-    // The actual animation. You perform that before polar conversion.
-    q = r2(uTime*dir)*q;
+    vec3 rd = (lp-ro); // Unnormalized direction ray.
+
+    float shade = 1.0;
+    float dist = 0.05;    
+    float end = max(length(rd), 0.001);
+    float stepDist = end/float(maxIterationsShad);
     
-    // Polar angle.
-    const float aNum = 1.;
-    float a = atan(q.y, q.x);
+    rd /= end;
+
+    // Max shadow iterations - More iterations make nicer shadows, but slow things down. Obviously, the lowest 
+    // number to give a decent shadow is the best one to choose. 
+    for (int i=0; i<maxIterationsShad; i++){
+
+        float h = map(ro + rd*dist);
+        //shade = min(shade, k*h/dist);
+        shade = min(shade, smoothstep(0.0, 1.0, k*h/dist)); // Subtle difference. Thanks to IQ for this tidbit.
+        //dist += min( h, stepDist ); // So many options here: dist += clamp( h, 0.0005, 0.2 ), etc.
+        dist += clamp(h, 0.02, 0.25);
+        
+        // Early exits from accumulative distance function calls tend to be a good thing.
+        if (h<0.001 || dist > end) break; 
+    }
+
+    // I've added 0.5 to the final shade value, which lightens the shadow a bit. It's a preference thing.
+    return min(max(shade, 0.) + 0.3, 1.0); 
+}
+
+
+// Simple hexagonal truchet patten. This is based on something Fabrice and Mattz did.
+//
+// hexagonal truchet ( 352 ) - FabriceNeyret2
+// https://www.shadertoy.com/view/Xdt3D8
+//
+// hexagonal tiling - mattz
+// https://www.shadertoy.com/view/4d2GzV
+float hexTruchet(in vec2 p) { 
+    
+    p *= 6.;
+    
+	// Hexagonal coordinates.
+    vec2 h = vec2(p.x + p.y*.577350269, p.y*1.154700538);
+    
+    // Closest hexagon center.
+    vec2 f = fract(h); h -= f;
+    float c = fract((h.x + h.y)/3.);
+    h =  c<.666 ?   c<.333 ?  h  :  h + 1.  :  h  + step(f.yx, f); 
+
+    p -= vec2(h.x - h.y*.5, h.y*.8660254);
+    
+    // Rotate (flip, in this case) random hexagons. Otherwise, you'd hava a bunch of circles only.
+    // Note that "h" is unique to each hexagon, so we can use it as the random ID.
+    c = fract(cos(dot(h, vec2(41.13, 289.57)))*43758.5453); // Reusing "c."
+    p -= p*step(c, .5)*2.; // Equivalent to: if (c<.5) p *= -1.;
+    
+    // Minimum squared distance to neighbors. Taking the square root after comparing, for speed.
+    // Three partitions need to be checked due to the flipping process.
+    p -= vec2(-1, 0);
+    c = dot(p, p); // Reusing "c" again.
+    p -= vec2(1.5, .8660254);
+    c = min(c, dot(p, p));
+    p -= vec2(0, -1.73205);
+    c = min(c, dot(p, p));
+    
+    return sqrt(c);
+    
+    // Wrapping the values - or folding the values over (abs(c-.5)*2., cos(c*6.283*1.), etc) - to produce 
+    // the nicely lined-up, wavy patterns. I"m perfoming this step in the "map" function. It has to do 
+    // with coloring and so forth.
+    //c = sqrt(c);
+    //c = cos(c*6.283*2.) + cos(c*6.283*4.);
+    //return (clamp(c*.6+.5, 0., 1.));
+
+}
+
+// Bumping the faces.
+float bumpFunc(vec3 p, vec3 n){
+    
+    // Mapping the 3D object position to the 2D UV coordinate of one of three
+    // orientations, which are determined by the dominant normal axis.    
+    n = abs(n);
+    p.xy = n.x>.5? p.yz : n.y>.5? p.xz : p.xy; 
+    
+    // Wavy, 70s looking, hexagonal Truchet pattern.
+    vec2 sc = (cos(hexTruchet(p.xy)*6.283*vec2(2, 4)));
+    return clamp(dot(sc, vec2(.6)) + .5, 0., 1.);
+
+}
+
+// Standard function-based bump mapping function.
+vec3 bumpMap(in vec3 p, in vec3 n, float bumpfactor){
+    
+    const vec2 e = vec2(0.002, 0);
+    float ref = bumpFunc(p, n);                 
+    vec3 grad = (vec3(bumpFunc(p - e.xyy, n),
+                      bumpFunc(p - e.yxy, n),
+                      bumpFunc(p - e.yyx, n) )-ref)/e.x;                     
+          
+    grad -= n*dot(n, grad);          
+                      
+    return normalize( n + grad*bumpfactor );
+	
+}
+
+// Bumping the edges with some block partitions. Made up on the spot. 
+float bumpFunc2(vec3 p, vec3 n){
+    
+    // Partition space to produce some smooth blocks.
+    p = abs(fract(p*3.) - .5);
+    float c = max(max(p.x, p.y), p.z);
+    
+    return 1. - smoothstep(0., .025, c - .47);
+    
+}
+
+// A second function-based bump mapping function. Used for
+// the edging. Messy, but probably faster... probably. :)
+vec3 bumpMap2(in vec3 p, in vec3 n, float bumpfactor){
+    
+    const vec2 e = vec2(0.002, 0);
+    float ref = bumpFunc2(p, n);                 
+    vec3 grad = (vec3(bumpFunc2(p - e.xyy, n),
+                      bumpFunc2(p - e.yxy, n),
+                      bumpFunc2(p - e.yyx, n) )-ref)/e.x;                     
+          
+    grad -= n*dot(n, grad);          
+                      
+    return normalize( n + grad*bumpfactor );
+	
+}
+
+// Cheap and nasty 2D smooth noise function with inbuilt hash function - based on IQ's 
+// original. Very trimmed down. In fact, I probably went a little overboard. I think it 
+// might also degrade with large time values. I'll swap it for something more robust later.
+float n2D(vec2 p) {
+
+	vec2 i = floor(p); p -= i; p *= p*(3. - p*2.);  
+    
+	return dot(mat2(fract(sin(vec4(0, 41, 289, 330) + dot(i, vec2(41, 289)))*43758.5453))*
+                vec2(1. - p.y, p.y), vec2(1. - p.x, p.x) );
+
+}
+
+// Texturing the sides with a 70s looking hexagonal Truchet pattern.
+vec3 texFaces(in vec3 p, in vec3 n){
+    
+    // Use the normal to determine the face. Dominant "n.z," then use the XY plane, etc.
+    n = abs(n);
+    p.xy = n.x>.5? p.yz : n.y>.5? p.xz : p.xy; 
+
+    // Some fBm noise based bluish red coloring.
+    n = mix(vec3(.3, .1, .02), vec3(.35, .5, .65), n2D(p.xy*8.)*.66 + n2D(p.xy*16.)*.34);
+    n *= n2D(p.xy*512.)*1.2 + 1.4;
+    
+    //n =  n*.3 + min(n.zyx*vec3(1.3, .6, .2)*.75, 1.)*.7;
    
-    // Wrapping the polar angle.
-    return mod(a/3.14159, 2./aNum) - 1./aNum;
-   
+    // Overlaying with the hexagonal Truchet pattern.
+    vec2 sc = (cos(hexTruchet(p.xy)*6.283*vec2(2, 4)));
+    n *= clamp(dot(sc, vec2(.6))+.5, 0., 1.)*.95 + .05;
     
+    return min(n, 1.);
+
+}
+
+// Terxturing the edges with something subtle.
+vec3 texEdges(in vec3 p, in vec3 n){
+    
+    float bf = bumpFunc2(p, n); // Bump function.
+    
+    // 2D face selection.
+    n = abs(n);
+    p.xy = n.x>.5? p.yz : n.y>.5? p.xz : p.xy; 
+
+    // Mixing color with some fBm noise.
+    n = mix(vec3(.3, .1, .02), vec3(.35, .5, .65), n2D(p.xy*8.)*.66 + n2D(p.xy*16.)*.34);
+    n *= n2D(p.xy*512.)*.85 + .15; 
+    
+    // More coloring.
+    n = min((n + .35)*vec3(1.05, 1, .9), 1.);
+    
+    // Running the bump function over the top for some extra depth.
+    n *= bf*.75+.25;
+    
+    return n;
 }
 
 out vec4 fragColor;
 in vec3 FragPos;
 
+uniform float uTime;
+uniform vec2 uResolution;
+
 void main(){
-
-    // I didn't feel like tayloring the antiasing to suit every resolution, which can get tiring, 
-    // so I've put a range on it. Just for the record, I coded this for the 800 by 450 pixel canvas.
     
-    // Aspect correct screen coordinates.
-	vec2 u = (2.0 * FragPos.zy - uResolution.xy) / uResolution.y;
     
-    // Scaling and moving the screen coordinates.
-    vec2 sc = u*4. + s.yx*uTime/8.;
+    // Unit direction ray vector: Note the absence of a divide term. I came across
+    // this via a comment Shadertoy user "coyote" made. I'm pretty happy with this.
+    vec3 rd = vec3(2.*FragPos.zy - uResolution.xy, uResolution.y);
     
-    // Converting the scaled and translated pixels to a hexagonal grid cell coordinate and
-    // a unique coordinate ID. The resultant vector contains everything you need to produce a
-    // pretty pattern, so what you do from here is up to you.
-    vec4 h = getHex(sc); // + s.yx*iTime/2.
+    // Barrel distortion;
+    rd = normalize(vec3(rd.xy, sqrt(max(rd.z*rd.z - dot(rd.xy, rd.xy)*.2, 0.))));
     
-    // Obtaining some offset values to do a bit of cubic shading. There are probably better ways
-    // to go about it, but it's quick and gets the job done.
-    vec4 h2 = getHex(sc - 1./s);
-    vec4 h3 = getHex(sc + 1./s);
+    // Rotating the ray with Fabrice's cost cuttting matrix. I'm still pretty happy with this also. :)
+    vec2 m = sin(vec2(1.57079632, 0) + uTime/4.);
+    rd.xy = rd.xy*mat2(m.xy, -m.y, m.x);
+    rd.xz = rd.xz*mat2(m.xy, -m.y, m.x);
     
-    // Storing the hexagonal coordinates in "p" to save having to write "h.xy" everywhere.
-    vec2 p = h.xy;
+    // Ray origin: Sending it along the Z-axis.
+    vec3 ro = vec3(0, 0, uTime);
+    // Alternate: Set off in the YZ direction. Note the ".5." It's an old lattice trick.
+    //vec3 ro = vec3(0, uTime/2. + .5, uTime/2.);
     
-    // The beauty of working with hexagonal centers is that the relative edge distance will simply 
-    // be the value of the 2D isofield for a hexagon.
-    //
-    float eDist = hex(p); // Edge distance.
-    float cDist = dot(p, p); // Relative squared distance from the center.
+    vec3 lp = ro + vec3(.2, 1., .3); // Light, near the ray origin.
+    
+    // Set the initial scene color to black.
+    vec3 col = vec3(0);
 
     
-    // Using the identifying coordinate - stored in "h.zw," to produce a unique random number
-    // for the hexagonal grid cell.
-    float rnd = hash21(h.zw);
-    //float aRnd = sin(rnd*6.283 + iTime*1.5)*.5 + .5; // Animating the random number.
+    float t = trace(ro, rd); // Raymarch.
     
-    #ifdef INTERLACING
-    // Random vec3 - used for some overlapping.
-    //vec3 lRnd = vec3(rnd*14.4 + .81, fract(rnd*21.3 + .97), fract(rnd*7.2 + .63));
-    vec3 lRnd = vec3(hash21(h.zw + .23), hash21(h.zw + .96), hash21(h.zw + .47));
-    #endif
-    
-    // It's possible to control the randomness to form some kind of repeat pattern.
-    //rnd = mod(h.z + h.w, 2.);
-    
-
-    // Redundant here, but I might need it later.
-    float dir = 1.;
-    
-
-    
-    // Storage vector.
-    vec2 q;
-    
-    
-    // If the grid cell's random ID is above a threshold, flip the Y-coordinates.
-    if(rnd>.5) p.y = -p.y;
+    // Normally, you'd only light up the scene if the distance is less than the outer boundary.
+    // However, in this case, since most rays hit, I'm clamping to the far distance, and doing
+    // the few extra calculations. The payoff (I hope) is not having a heap of nested code.
+    // Whether that results in more speed, or not, I couldn't really say, but I'd imagine you'd
+    // receive a slight gain... maybe. If the scene were more open, you wouldn't do this.
+    //if(t<FAR){
         
-    
+        float edge;
+        vec3 sp = ro + rd*t; // Surface position.
+        vec3 sn = normal(sp, edge); // Surface normal.
 
-    // Determining the closest of the three arcs to the current point, the keeping a copy
-    // of the vector used to produce it. That way, you'll know just to render that particular
-    // decorated arc, lines, etc - instead of all three. 
-    const float r = 1.;
-    const float th = .2; // Arc thickness.
-    
-    // Arc one.
-    q = p - vec2(0, r)/s;
-    vec3 da = vec3(q, dfPol(q));
-    
-    // Arc two. "r2" could be hardcoded, but this is a relatively cheap 2D example.
-    q = r2(3.14159*2./3.)*p - vec2(0, r)/s;
-    vec3 db = vec3(q, dfPol(q));
+    	// Saving a copy of the unbumped normal, since the texture routine require it.
+    	// I found that out the hard way. :)
+        vec3 svn = sn;
+		
+    	// Bump mapping the faces and edges. The bump factor is reduced with distance
+    	// to lessen artifacts.
+        if(edge<.001) sn = bumpMap(sp, sn, .01/(1. + t*.25));
+        else sn = bumpMap2(sp, sn, .03/(1. + t*.25));
 
-     // Arc three. 
-    q = r2(3.14159*4./3.)*p - vec2(0, r)/s;
-    vec3 dc = vec3(q, dfPol(q));
-    
-    // Compare distance fields, and return the vector used to produce the closest one.
-    vec3 q3 = da.z<db.z && da.z<dc.z? da : db.z<dc.z ? db : dc;
-    
-    
-    // TRUCHET PATTERN
-    //
-    // Set the poloidal arc radius: You can change the poloidal distance field in 
-    // the "dfPol" function to a different curve shape, but you'll need to change
-    // the radius to one of the figures below.
-    //
-    q3.z -= .57735/2. + th/2.;  // Circular and dodecahedral arc/curves.
-    //q3.z -= .5/2. + th/2.;  // Hexagon curve.
-    //q3.z -= .7071/2. + th/2.;  // Triangle curve.
-    
-    q3.z = max(q3.z, -th - q3.z); // Chop out the smaller radius. The result is an arc.
-    
-    // Store the result in "d" - only to save writing "q3.z" everywhere.
-    float d = q3.z;
-    
-    // If you'd like to see the maze by itself.
-    #ifdef MAZE_ONLY
-    d += 1e5;
-    #endif
-    
-    // Truchet border.
-    float dBord = max(d - .015, -d);
-    
+        vec3 ref = reflect(rd, sn); // Reflected ray.
 
-    
- 
-    
-    // MAZE BORDERS
-    // Producing the stright-line arc borders. Basically, we're rendering some hexagonal borders around
-    // the arcs. The result is the hexagonal maze surrounding the Truchet pattern.
-    q = q3.xy;
-    const float lnTh = .05;
-    q = abs(q);
-    
-    float arcBord = hex(q);
-    //float arcBord = length(q); // Change arc length to ".57735."
-    //float arcBord = max(hex(q), hex(r2(3.14159/6.)*q)); // Change arc length to ".57735."
-    
-    // Making the hexagonal arc.
-    float lnOuter = max(arcBord - .5, -(arcBord - .5 + lnTh)); //.57735
-    
-    
-    #ifdef INTERLACING
-    float ln = min(lnOuter, (q.y*.866025 + q.x*.5, q.x) - lnTh);
-    #else
-    float ln = min(lnOuter, arcBord - lnTh);
-    #endif
-    float lnBord = ln - .03; // Border lines to the maze border, if that makes any sense. :)
-     
-    
-   
-    
-    ///////
-    // The moving Truchet pattern. The polar coordinates consist of a wrapped angular coordinate,
-    // and the distance field itself.
-    float a = getPolarCoord(q3.xy, dir);
-    float d2 = df(vec2(q3.z, a), dir); 
-    
-    // Smoothstepped Truchet mask.
-    float dMask = smoothstep(0., .015, d);
-    ///////
-    
-    // Producing the background with some subtle gradients.
-    vec3 bg =  mix(vec3(0, .4, .6), vec3(0, .3, .7), dot(sin(u*6. - cos(u*3.)), vec2(.4/2.)) + .4); 
-    bg = mix(bg, bg.xzy, dot(sin(u*6. - cos(u*3.)), vec2(.4/2.)) + .4);
-    bg = mix(bg, bg.zxy, dot(sin(u*3. + cos(u*3.)), vec2(.1/2.)) + .1);
-   
-    #ifdef INTERLACING
-    // Putting in background cube lines for the interlaced version.
-    float hLines = smoothstep(0., .02, eDist - .5 + .02);
-    bg = mix(bg, vec3(0), smoothstep(0., .02, ln)*dMask*hLines);
-    #endif
-    
-    // Lines over the maze lines. Applying difference logic, depending on whether the 
-    // pattern is interlaced or not.
-    const float tr = 1.;
-
-    float eDist2 = hex(h2.xy);
-    float hLines2 = smoothstep(0., .02, eDist2 - .5 + .02);
-    #ifdef INTERLACING
-    if(rnd>.5 && lRnd.x<.5) hLines2 *= smoothstep(0., .02, ln);
-    if(lRnd.x>.5) hLines2 *= dMask;
-    #else
-    if(rnd>.5) hLines2 *= smoothstep(0., .02, ln);
-    hLines2 *= dMask;
-    #endif
-    bg = mix(bg, vec3(0), hLines2*tr);
-    
-    float eDist3 = hex(h3.xy);
-    float hLines3 = smoothstep(0., .02, eDist3 - .5 + .02);
-    #ifdef INTERLACING
-    if(rnd<=.5 && lRnd.x>.5) hLines3 *= smoothstep(0., .02, ln);
-    if(lRnd.x>.5) hLines3 *= dMask;
-    #else
-    if(rnd<=.5) hLines3 *= smoothstep(0., .02, ln);
-    hLines3 *= dMask;
-    #endif
-    bg = mix(bg, vec3(0), hLines3*tr);
+        vec3 oCol = texFaces(sp, svn); // Texture color at the surface point.
+        if(edge>.001) oCol = texEdges(sp, svn);
 
 
-    // Using the two off-centered hex coordinates to give the background a bit of highlighting.
-    float shade = max(1.25 - dot(h2.xy, h2.xy)*2., 0.);
-    shade = min(shade, max(dot(h3.xy, h3.xy)*3. + .25, 0.));
-    bg = mix(bg, vec3(0), (1.-shade)*.5); 
-    
-    // I wanted to change the colors of everything at the last minute. It's pretty hacky, so
-    // when I'm feeling less lazy, I'll tidy it up. :)
-    vec3 dotCol = bg.zyx*vec3(1.5, .4, .4);
-    vec3 bCol = mix(bg.zyx, bg.yyy, .25);
-    bg = mix(bg.yyy, bg.zyx, .25);
-    
+        float sh = softShadow(sp, lp, 16.); // Soft shadows.
+        float ao = calcAO(sp, sn); // Self shadows. Not too much.
 
-    // Under the random threshold, and we draw the lines under the Truchet pattern.
-    #ifdef INTERLACING
-    if(lRnd.x>.5){
-       bg = mix(bg, vec3(0), (1. - smoothstep(0., .015, lnBord)));
-       bg = mix(bg, bCol, (1. - smoothstep(0., .015, ln))); 
-       // Center lines.
-       bg = mix(bg, vec3(0), smoothstep(0., .02, eDist3 - .5 + .02)*tr);
-    }
-    #else
-    bg = mix(bg, vec3(0), (1. - smoothstep(0., .015, lnBord)));
-    bg = mix(bg, bCol, (1. - smoothstep(0., .015, ln)));
-    #endif
+        vec3 ld = lp - sp; // Light direction.
+        float lDist = max(length(ld), 0.001); // Light to surface distance.
+        ld /= lDist; // Normalizing the light direction vector.
 
-   
-    
-    // Apply the Truchet shadow to the background.
-    bg = mix(bg, vec3(0), (1. - smoothstep(0., .07, d))*.5);
-    
-    
-    // Place the Truchet field to the background, with some additional shading to give it a 
-    // slightly rounded, raised feel.
-    //vec3 col = mix(bg, vec3(1)*max(-d*3. + .7, 0.), (1. - dMask)*.65);
-    // Huttarl suggest slightly more shading on the snake-like pattern edges, so I added just a touch.
-    vec3 col = mix(bg, vec3(1)*max(-d*9. + .4, 0.), (1. - dMask)*.65);
+        float diff = max(dot(ld, sn), 0.); // Diffuse component.
+        float spec = pow(max(dot(reflect(-ld, sn), -rd), 0.), 32.); // Specular.
+
+        float atten = 1.25/(1.0 + lDist*0.1 + lDist*lDist*.05); // Attenuation.
 
 
-    
-    // Apply the moving dot pattern to the Truchet.
-    //dotCol = mix(dotCol, dotCol.xzy, dot(sin(u*3.14159*2. - cos(u.yx*3.14159*2.)*3.14159), vec2(.25)) + .5);
-    col = mix(col, vec3(0), (1. - dMask)*(1. - smoothstep(0., .02, d2)));
-    col = mix(col, dotCol, (1. - dMask)*(1. - smoothstep(0., .02, d2 + .125)));
-    
-    // Truchet border.
-    col = mix(col, vec3(0), 1. - smoothstep(0., .015, dBord));
-    
-    #ifdef INTERLACING
-    // Over the random threshold, and we draw the lines over the Truchet.
-    if(lRnd.x<=.5){
-        col = mix(col, vec3(0), (1. - smoothstep(0., .015, lnBord)));
-        col = mix(col, bCol, (1. - smoothstep(0., .015, ln)));  
-        // Center lines.
-        col = mix(col, vec3(0), smoothstep(0., .02, eDist2 - .5 + .02)*tr);
-    }
-    #endif
 
-        
-    
-    
-    // Using the offset hex values for a bit of fake 3D highlighting.
-    //if(rnd>.5) h3.y = -h3.y; // All raised edges. Spoils the mild 3D illusion.
-    #ifdef INTERLACING
-    float trSn = max(dMask, 1. - smoothstep(0., .015, lnBord))*.75 + .25;
-    #else
-    float trSn = dMask*.75 + .25;
-    #endif
-    col = mix(col, vec3(0), trSn*(1. - hex(s/2.+h2.xy)));
-    col = mix(col, vec3(0), trSn*(1. - hex(s/2.-h3.xy)));
- 
-    
-    // Using the edge distance to produce some repeat contour lines. Standard stuff.
-    //if (rnd>.5) h.xy = -h.yx;
-    //float cont = clamp(cos(hex(h.xy)*6.283*12.)*1.5 + 1.25, 0., 1.);
-    //col = mix(col, vec3(0), (1. - smoothstep(0., .015, ln))*(smoothstep(0., .015, d))*(1.-cont)*.5);
-    
-    
-    // Very basic hatch line effect.
-    float gr = dot(col, vec3(.299, .587, .114));
-    float hatch = (gr<.45)? clamp(sin((sc.x - sc.y)*3.14159*40.)*2. + 1.5, 0., 1.) : 1.;
-    float hatch2 = (gr<.25)? clamp(sin((sc.x + sc.y)*3.14159*40.)*2. + 1.5, 0., 1.) : 1.;
+        ///////////////
+        // Cheap reflection: Not entirely accurate, but the reflections are pretty subtle, so not much 
+        // effort is being put in.
+        //
+        float rt = refTrace(sp + ref*0.1, ref); // Raymarch from "sp" in the reflected direction.
+        float rEdge;
+        vec3 rsp = sp + ref*rt; // Reflected surface hit point.
+        vec3 rsn = normal(rsp, rEdge); // Normal at the reflected surface.
+        //rsn = bumpMap(rsp, rsn, .005); // We're skipping the reflection bump to save some calculations.
 
-    col *= min(hatch, hatch2)*.5 + .5;    
-    col *= clamp(sin((sc.x - sc.y)*3.14159*80.)*1.5 + .75, 0., 1.)*.25 + 1.;  
-    
- 
-    // Subtle vignette.
-    u = FragPos.zy/uResolution.xy;
-    // Colored variation.
-    col = mix(pow(min(vec3(1.5, 1, 1)*col, 1.), vec3(1, 3, 16)), col, 
-            pow(16.*u.x*u.y*(1. - u.x)*(1. - u.y) , .25)*.75 + .25);    
-    
+        vec3 rCol = texFaces(rsp, rsn); // Texel at "rsp."    
+        if(rEdge>.001)rCol = texEdges(rsp, rsn); // Reflection edges.
 
+        float rDiff = max(dot(rsn, normalize(lp-rsp)), 0.); // Diffuse light at "rsp."
+        float rSpec = pow(max(dot(reflect(-normalize(lp-rsp), rsn), -ref), 0.), 8.); // Diffuse light at "rsp."
+        float rlDist = length(lp - rsp);
+        // Reflected color. Not entirely accurate, but close enough. 
+        rCol = (rCol*(rDiff*1. + vec3(.45, .4, .3)) + vec3(1., .6, .2)*rSpec*2.);
+        rCol *= 1.25/(1.0 + rlDist*0.1 + rlDist*rlDist*.05);    
+        ////////////////
+
+
+        // Combining the elements above to light and color the scene.
+        col = oCol*(diff*1. + vec3(.45, .4, .3)) + vec3(1., .6, .2)*spec*2.;
+
+
+        // Adding the reflection to the edges and faces. Technically, there should be less on the faces,
+        // but after all that trouble, I thought I'd bump it up a bit. :)
+        if(edge<.001) col += rCol*.2;
+        else col += rCol*.35;
+        // Alternate way to mix in the reflection. Sometimes, it's preferable, but not here.
+        //if(edge<.001) col = mix(col, rCol, .35)*1.4;
+        //else col = mix(col, rCol, .5)*1.4;
+
+
+        // Shading the scene color and clamping. By the way, we're letting the color go beyond the maximum to
+        // let the structure subtly glow a bit... Not really natural, but it looks a little shinier.
+        col = min(col*atten*sh*ao, 1.);
     
-    // Rough gamma correction.    
-	fragColor = vec4(sqrt(max(col, 0.)), 1);
+    //}
+    
+    // Mixing in some hazy bluish orange background.
+    vec3 bg = mix(vec3(.5, .7, 1).zyx, vec3(1, .7, .3).zyx, -rd.y*.35 + .35);
+    col = mix(col, bg, smoothstep(0., FAR-25., t));//min(bg.zyx*vec3(1.3, .6, .2)*1.5, 1.)
+    
+    // Postprocesing - A subtle vignette with a bit of warm coloring... I wanted to warm the atmosphere up
+    // a bit. Uncomment it, if you want to see the bluer -possibly more natural looking - unprocessed version.
+    vec2 uv = FragPos.zy/uResolution.xy;
+    float vig = pow(16.*uv.x*uv.y*(1.-uv.x)*(1.-uv.y), 0.125);
+    col *= vec3(1.2, 1.1, .85)*vig;
+
+    // Rough gamma correction.
+	fragColor = vec4(sqrt(clamp(col, 0., 1.)), 1.0);
     
 }

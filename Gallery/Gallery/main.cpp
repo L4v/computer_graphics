@@ -28,8 +28,8 @@
 #define ArrayCount(a) (sizeof(a) / sizeof((a)[0]))
 #define G 9.81f
 
-int WindowWidth = 800;
-int WindowHeight = 800;
+int WindowWidth = 1920;
+int WindowHeight = 1080;
 const std::string WindowTitle = "Gallery";
 
 class Camera {
@@ -250,7 +250,15 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    Window = glfwCreateWindow(800, 600, "Gallery", 0, 0);
+    // Borderless Fullscreen window for primary monitor (no dualscreen support)
+    GLFWmonitor* Monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* WindowMode = glfwGetVideoMode(Monitor);
+    glfwWindowHint(GLFW_RED_BITS, WindowMode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, WindowMode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, WindowMode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, WindowMode->refreshRate);
+
+    Window = glfwCreateWindow(WindowWidth, WindowHeight, "Gallery", Monitor, 0);
     if (!Window) {
         std::cerr << "Failed to create window" << std::endl;
         glfwTerminate();
@@ -282,6 +290,7 @@ int main() {
     Shader Mazeflow("shaders/basic.vert", "shaders/mazeflow.frag");
     Shader Voronoise("shaders/basic.vert", "shaders/voronoise.frag");
     Shader Ashanoha("shaders/basic.vert", "shaders/ashanoha.frag");
+    Shader Raymarch("shaders/basic.vert", "shaders/raymarch.frag");
 
     float StartTime = glfwGetTime();
     float EndTime = glfwGetTime();
@@ -397,11 +406,21 @@ int main() {
         // NOTE(Jovan): Mazeflow "painting"
         glUseProgram(Mazeflow.mId);
         Model = glm::mat4(1.0f);
-        Model = glm::translate(Model, glm::vec3(15.9f, 4.0f, 0.0f));
-        Model = glm::scale(Model, glm::vec3(0.1f, 6.0f, 12.0f));
+        Model = glm::translate(Model, glm::vec3(15.9f, 4.0f, 3.0f));
+        Model = glm::scale(Model, glm::vec3(0.1f, 6.0f, 6.0f));
         Mazeflow.SetUniform1f("uTime", glfwGetTime());
-        Mazeflow.SetUniform2f("uResolution", glm::vec2(12, 6));
+        Mazeflow.SetUniform2f("uResolution", glm::vec2(12, 12));
         Mazeflow.SetMVP(Model, State.mCamera->mView, State.mCamera->mProjection);
+        CubeBuffer.Render();
+
+        // NOTE(Jovan): Raymarch "painting"
+        glUseProgram(Raymarch.mId);
+        Model = glm::mat4(1.0f);
+        Model = glm::translate(Model, glm::vec3(15.9f, 4.0f, -3.0f));
+        Model = glm::scale(Model, glm::vec3(0.1f, 6.0f, 6.0f));
+        Raymarch.SetUniform1f("uTime", glfwGetTime());
+        Raymarch.SetUniform2f("uResolution", glm::vec2(12, 12));
+        Raymarch.SetMVP(Model, State.mCamera->mView, State.mCamera->mProjection);
         CubeBuffer.Render();
 
         // NOTE(Jovan): Voronoise "painting"

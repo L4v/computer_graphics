@@ -144,6 +144,7 @@
     <ClCompile Include="buffer.cpp" />
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="mesh.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="phongshader.cpp" />
     <ClCompile Include="quad.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="irenderobject.hpp" />
     <ClInclude Include="math3d.hpp" />
+    <ClInclude Include="mesh.hpp" />
     <ClInclude Include="model.hpp" />
     <ClInclude Include="phongshader.hpp" />
     <ClInclude Include="quad.hpp" />
