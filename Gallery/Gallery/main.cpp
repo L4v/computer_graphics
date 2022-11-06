@@ -17,6 +17,9 @@
 #include <glm/gtx/matrix_operation.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <string>
+#include <algorithm>
+#include <chrono>
+#include <thread>
 #include "shader.hpp"
 #include "phongshader.hpp"
 #include "cube.hpp"
@@ -30,6 +33,7 @@
 
 int WindowWidth = 1920;
 int WindowHeight = 1080;
+float TargetFPS = 60.0f;
 const std::string WindowTitle = "Gallery";
 
 class Camera {
@@ -65,8 +69,8 @@ public:
         mVelocity = glm::vec3(0.0f);
         mPitch = 0.0f;
         mYaw = -90.0f;
-        mMoveSpeed = 16.0f;
-        mLookSpeed = 100.0f;
+        mMoveSpeed = 8.0f;
+        mLookSpeed = 50.0f;
         mProjection = glm::mat4(1.0f);
         mView = glm::mat4(1.0f);
         mPlayerHeight = 2.0f;
@@ -96,6 +100,8 @@ public:
         if (dir == MOVE_FWD) {
             mPosition += Velocity * mFront;
         }
+        mPosition.x = std::clamp(mPosition.x, -15.0f, 15.0f);
+        mPosition.z = std::clamp(mPosition.z, -15.0f, 15.0f);
 
         _UpdateVectors();
     }
@@ -318,6 +324,7 @@ int main() {
     glEnable(GL_DEPTH_TEST);
     State.mCamera->UpdateProjection(WindowWidth, WindowHeight);
     State.mCamera->UpdateView();
+    float TargetFrameTime = 1.0f / TargetFPS;
     while (!glfwWindowShouldClose(Window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glfwPollEvents();
@@ -446,7 +453,15 @@ int main() {
         glUseProgram(0);
 
         glfwSwapBuffers(Window);
+        
+        // NOTE(Jovan): Time management (might not work)
         EndTime = glfwGetTime();
+        float WorkTime = EndTime - StartTime;
+        if(WorkTime < TargetFrameTime) {
+            int DeltaMS = (int)((TargetFrameTime - WorkTime) * 1000.0f);
+            std::this_thread::sleep_for(std::chrono::milliseconds(DeltaMS));
+            EndTime = glfwGetTime();
+        }
         State.mDT = EndTime - StartTime;
     }
 
