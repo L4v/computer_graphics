@@ -10,7 +10,9 @@
  */
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+
 #include <iostream>
+#include "shader.hpp"
 
 const int WindowWidth = 800;
 const int WindowHeight = 800;
