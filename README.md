@@ -12,20 +12,21 @@ Napisati program koji na čitavom prozoru crta zastavu drzave po proizvoljnom iz
 
 # Zadatak 4:
 
-Napisati program koji crta šarenu traku proizvoljnih boja okolo ivica prozora, a na sredini ekrana crvenu zvijezdu na svijetlo sivoj pozadini. Traka je široka 0.3 dimenzija ekrana. Sredina ekrana je sive boje.
+Napisati program koji crta šarenu traku proizvoljnih boja okolo ivica prozora, a na sredini ekrana crvenu zvijezdu na svijetlo sivoj pozadini. Traka je široka 0.3 kvadranta. Zvijezda ne mora biti popunjena. Sredina ekrana je sive boje.
 
 # Zadatak 5:
 
 Napisati program koji crta krug poluprečnika 0.5 na sredini ekrana. Krug može biti jedne boje ili šaren. Sve boje, uključujući i pozadinsku su proizvoljne.
 
 # Zadatak 6:
+
 Kao novopečeni inžinjer svježe zaposleni u neimenovanoj Novosadskoj firmi, dobili ste zadatak da napravite screen-saver u OpenGL-u za buduću generaciju embedded sistema te firme. Screen-saver se sastoji od logo-a firme na crnoj pozadini koji se polako kreće lijevo-desno od jedne ivice ekrana, do druge. Logo je prikazan na slici:
 
 
 # Zadatak 7:
 
-Zaposleni kao programer računarske grafike u firmi koja razvija novu video igru, dobili ste zadatak da napravite loading-screen te igre. Loading screen se sastoji od malog narandžastog trougla u donjem desnom uglu čija boja se smjenjuje od crne do bijele tokom vremena. 
+Zaposleni kao programer računarske grafike u firmi koja razvija novu video igru, dobili ste zadatak da napravite loading-screen te igre. Loading screen se sastoji od malog narandžastog trougla u donjem desnom uglu ekrana čija boja se smjenjuje od crne do bijele tokom vremena. 
 
 # Zadatak 8:
 
-Napisati program koji na ekranu prikazuje trougao koji može da se pomijera po ekranu pomoću WSAD tastera, ali ne može preći preko ivica ekrana. Ukoliko trougao dođe do gornjeg desnog ugla ekrana, zatvoriti program.
+Napisati program koji na ekranu prikazuje kvadrat koji može da se pomijera po ekranu pomoću WSAD tastera, ali ne može preći preko ivica ekrana. Ukoliko trougao dođe do gornjeg desnog ugla ekrana, zatvoriti program.
