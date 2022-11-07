@@ -76,12 +76,10 @@ CalculatePointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
     float Distance = length(light.Position - FragPos);
     float Attenuation = 1.0 / (light.Kc + light.Kl * Distance + light.Kq * (Distance * Distance));
     
-    vec3 vAmbient = light.Ka * vec3(texture(uDiffuse, ScaledTexCoord));
-    vec3 vDiffuse = light.Kd * Diffuse * vec3(texture(uDiffuse, ScaledTexCoord));
-    vec3 vSpecular = light.Ks * Specular * vec3(texture(uSpecular, ScaledTexCoord));
-
+    vec3 vAmbient = light.Ka * vec3(texture(uDiffuse, TexCoord));
+    vec3 vDiffuse = light.Kd * Diffuse * vec3(texture(uDiffuse, TexCoord));
+    vec3 vSpecular = light.Ks * Specular * vec3(texture(uSpecular, TexCoord));
     //float Shadow = ShadowCalculation(FragPos, light.Position);
-
     //return (vAmbient + (1.0f - Shadow) * (vDiffuse + vSpecular)) * Attenuation;
-    return (vAmbient + (vDiffuse + vSpecular)) * Attenuation;
+    return (vAmbient + vDiffuse + vSpecular) * Attenuation;
 }

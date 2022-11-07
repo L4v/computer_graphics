@@ -19,27 +19,28 @@ PhongShader::AddPointLight(const PointLight& light) {
 }
 
 void
-PhongShader::BindTexture(const std::string& uniform, unsigned unitIdx, GLenum target, Texture& texture) const {
+PhongShader::BindTexture(const std::string& uniform, unsigned unitIdx, GLenum target, Texture& texture) {
     glActiveTexture(GL_TEXTURE0 + unitIdx);
     SetUniform1i(uniform, unitIdx);
     SetUniform1f("uTexScale", texture.GetScale());
     glBindTexture(target, texture.GetId());
+    mBoundTextures[texture.GetId()] = { target, unitIdx };
 }
 
 void
-PhongShader::BindTexture(Texture& texture, GLenum unitIdx) const {
+PhongShader::BindTexture(Texture& texture, unsigned unitIdx) {
     if (texture.GetType() == Texture::SPECULAR) {
         return BindSpecular(texture, unitIdx);
     }
     BindDiffuse(texture, unitIdx);
 }
 void
-PhongShader::BindDiffuse(Texture& texture, GLenum unitIdx) const {
+PhongShader::BindDiffuse(Texture& texture, unsigned unitIdx) {
     BindTexture("uDiffuse", unitIdx, GL_TEXTURE_2D, texture);
 }
 
 void
-PhongShader::BindSpecular(Texture& texture, GLenum unitIdx) const {
+PhongShader::BindSpecular(Texture& texture, unsigned unitIdx) {
     BindTexture("uSpecular", unitIdx, GL_TEXTURE_2D, texture);
 }
 
@@ -47,4 +48,14 @@ PhongShader::BindSpecular(Texture& texture, GLenum unitIdx) const {
 void
 PhongShader::SetViewPosition(const glm::vec3& position) const {
     SetUniform3f("uViewPos", position);
+}
+
+void 
+PhongShader::UnbindTexture(Texture& texture) {
+    std::map<unsigned, BoundTextureInfo>::const_iterator It = mBoundTextures.find(texture.GetId());
+    if (It != mBoundTextures.end()) {
+        BoundTextureInfo Info = It->second;
+        glActiveTexture(GL_TEXTURE0 + Info.Unit);
+        glBindTexture(Info.Target, 0);
+    }
 }

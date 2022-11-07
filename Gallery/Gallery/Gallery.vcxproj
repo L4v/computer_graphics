@@ -142,6 +142,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp" />
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="cube.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
@@ -156,7 +157,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.hpp" />
+    <ClInclude Include="camera.hpp" />
     <ClInclude Include="cube.hpp" />
+    <ClInclude Include="gallery.hpp" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="irenderobject.hpp" />
     <ClInclude Include="math3d.hpp" />

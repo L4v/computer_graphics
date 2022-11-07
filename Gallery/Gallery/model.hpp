@@ -47,7 +47,7 @@ public:
     Model(std::string filename);
     bool Load();
     void ProcessMesh(const aiScene *scene, const aiMesh *mesh, unsigned meshIdx);
-    void Render(const PhongShader &program);
+    void Render(PhongShader &program);
 
 };
 

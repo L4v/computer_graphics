@@ -27,6 +27,11 @@ Lerp(float a, float b, float t) {
     return a + (b - a) * t;
 }
 
+inline float
+Clamp(float x, float min, float max) {
+    return x < min ? min : (x > max ? max : x);
+}
+
 struct v2 {
     union {
         float Values[2] = { 0 };

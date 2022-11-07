@@ -1,9 +1,9 @@
 #pragma once
 #include <iostream>
-#include <vector>
 #include <fstream>
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <vector>
 #include "math3d.hpp"
 #include "texture.hpp"
 

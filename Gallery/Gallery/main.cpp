@@ -27,143 +27,14 @@
 #include "buffer.hpp"
 #include "texture.hpp"
 #include "model.hpp"
+#include "gallery.hpp"
 
 #define ArrayCount(a) (sizeof(a) / sizeof((a)[0]))
-#define G 9.81f
 
 int WindowWidth = 1920;
 int WindowHeight = 1080;
 float TargetFPS = 60.0f;
 const std::string WindowTitle = "Gallery";
-
-class Camera {
-public:
-    enum ECameraMoveDirection {
-        MOVE_LEFT = 0,
-        MOVE_RIGHT,
-        MOVE_BWD,
-        MOVE_FWD
-    };
-
-    glm::mat4 mProjection;
-    glm::mat4 mView;
-
-    glm::vec3 mWorldUp;
-    glm::vec3 mPosition;
-    glm::vec3 mFront;
-    glm::vec3 mUp;
-    glm::vec3 mRight;
-
-    glm::vec3 mVelocity;
-
-    float mMoveSpeed;
-    float mLookSpeed;
-    float mPitch;
-    float mYaw;
-    float mPlayerHeight; // Should be moved out
-
-    Camera() {
-        mPosition = glm::vec3(0.0f);
-        mWorldUp = glm::vec3(0.0f, 1.0f, 0.0f);
-        mRight = glm::vec3(1.0f, 0.0f, 0.0f);
-        mVelocity = glm::vec3(0.0f);
-        mPitch = 0.0f;
-        mYaw = -90.0f;
-        mMoveSpeed = 8.0f;
-        mLookSpeed = 50.0f;
-        mProjection = glm::mat4(1.0f);
-        mView = glm::mat4(1.0f);
-        mPlayerHeight = 2.0f;
-        _UpdateVectors();
-    }
-
-    void Gravity(float dt) {
-        mVelocity.y -= G * dt;
-        mPosition += mVelocity * dt;
-        _UpdateVectors();
-    }
-
-    void Move(ECameraMoveDirection dir, float dt) {
-        float Velocity = mMoveSpeed * dt;
-        if (dir == MOVE_LEFT) {
-            mPosition -= Velocity * mRight;
-        }
-
-        if (dir == MOVE_RIGHT) {
-            mPosition += Velocity * mRight;
-        }
-
-        if (dir == MOVE_BWD) {
-            mPosition -= Velocity * mFront;
-        }
-
-        if (dir == MOVE_FWD) {
-            mPosition += Velocity * mFront;
-        }
-        mPosition.x = std::clamp(mPosition.x, -15.0f, 15.0f);
-        mPosition.z = std::clamp(mPosition.z, -15.0f, 15.0f);
-
-        _UpdateVectors();
-    }
-
-    void Rotate(float dx, float dy, float dt) {
-        float RotateVelocity = mLookSpeed * dt;
-        mYaw += dx * RotateVelocity;
-        mPitch += dy * RotateVelocity;
-
-        if (mPitch > 89.0f) {
-            mPitch = 89.0f;
-        }
-        if (mPitch < -89.0f) {
-            mPitch = -89.0f;
-        }
-
-        _UpdateVectors();
-    }
-
-    void UpdateProjection(int framebufferWidth, int framebufferHeight) {
-        mProjection = glm::perspective(45.0f, framebufferWidth / (float)framebufferHeight, 0.1f, 100.0f);
-    }
-
-    void UpdateView() {
-        mView = glm::lookAt(mPosition, mPosition + mFront, mUp);
-    }
-
-private:
-    void _UpdateVectors() {
-        mFront.x = cos(glm::radians(mYaw)) * cos(glm::radians(mPitch));
-        mFront.y = sin(glm::radians(mPitch));
-        mFront.z = sin(glm::radians(mYaw)) * cos(glm::radians(mPitch));
-        mFront = glm::normalize(mFront);
-        mRight = glm::normalize(glm::cross(mFront, mWorldUp));
-        mUp = glm::normalize(glm::cross(mRight, mFront));
-
-        if (mPosition.y < mPlayerHeight) {
-            mPosition.y = mPlayerHeight;
-        }
-    }
-};
-
-struct EngineState {
-    bool mMoveForward;
-    bool mMoveBackward;
-    bool mMoveLeft;
-    bool mMoveRight;
-    bool mFirstMouse;
-    glm::vec2 mCursorPos;
-    float mDT;
-    Camera *mCamera;
-
-    EngineState(Camera *camera) : mDT(0.0f) {
-        mCamera = camera;
-        mFirstMouse = true;
-
-        mMoveForward = false;
-        mMoveBackward = false;
-        mMoveLeft = false;
-        mMoveRight = false;
-    }
-};
 
 /**
  * @brief Error callback function for GLFW. See GLFW docs for details
@@ -314,7 +185,7 @@ int main() {
     Texture WallTexture("res/images/Marble_Blue_004_basecolor.jpg", Texture::DIFFUSE, 8.0f);
 
     glUseProgram(Phong.mId);
-    Phong.AddPointLight(PointLight(glm::vec3(0.0f, 2.0f, -15.8f), glm::vec3(0.0f, 0.0f, 0.2f), glm::vec3(0.0f, 0.0f, 0.5f), glm::vec3(0.0f, 0.0f, 0.8f)));
+    Phong.AddPointLight(PointLight(glm::vec3(0.0f, 1.0f, -16.0f), glm::vec3(0.1f), glm::vec3(0.5f), glm::vec3(0.8f)));
     Phong.AddPointLight(PointLight(glm::vec3(-15.8f, 2.0f, 0.0f), glm::vec3(0.2f, 0.1f, 0.0f), glm::vec3(0.5f, 0.4f, 0.0f), glm::vec3(0.8f, 0.7f, 0.0f)));
     Phong.AddPointLight(PointLight(glm::vec3(15.8f, 2.0f, 0.0f), glm::vec3(0.2f, 0.1f, 0.0f), glm::vec3(0.5f, 0.4f, 0.0f), glm::vec3(0.8f, 0.7f, 0.0f)));
     Phong.AddPointLight(PointLight(glm::vec3(0.0f, 2.0f, 15.8f), glm::vec3(0.2f), glm::vec3(0.5f), glm::vec3(0.8f)));
@@ -346,42 +217,44 @@ int main() {
 
         // NOTE(Jovan): South wall
         for (unsigned WallIdx = 0; WallIdx < 4; ++WallIdx) {
-            Model = glm::mat4(1.0f);
-            Model = glm::translate(Model, glm::vec3(-12.0f + WallIdx * 8, 4.0f, -16.0f));
-            Model = glm::scale(Model, glm::vec3(8.0f, 8.0f, 0.1f));
-            Phong.SetModel(Model);
-            CubeBuffer.Render();
+           Model = glm::mat4(1.0f);
+           Model = glm::translate(Model, glm::vec3(-12.0f + WallIdx * 8, 4.0f, -16.0f));
+           Model = glm::scale(Model, glm::vec3(8.0f, 8.0f, 0.1f));
+           Phong.SetModel(Model);
+           CubeBuffer.Render();
 
         // NOTE(Jovan): North wall
-            Model = glm::mat4(1.0f);
-            Model = glm::translate(Model, glm::vec3(-12.0f + WallIdx * 8, 4.0f, 16.0f));
-            Model = glm::scale(Model, glm::vec3(8.0f, 8.0f, 0.1f));
-            Phong.SetModel(Model);
-            CubeBuffer.Render();
+           Model = glm::mat4(1.0f);
+           Model = glm::translate(Model, glm::vec3(-12.0f + WallIdx * 8, 4.0f, 16.0f));
+           Model = glm::scale(Model, glm::vec3(8.0f, 8.0f, 0.1f));
+           Phong.SetModel(Model);
+           CubeBuffer.Render();
 
         // NOTE(Jovan): West wall
-            Model = glm::mat4(1.0f);
-            Model = glm::translate(Model, glm::vec3(-16.0f, 4.0f, -12.0f + WallIdx * 8));
-            Model = glm::scale(Model, glm::vec3(0.1f, 8.0f, 8.0f));
-            Phong.SetModel(Model);
-            CubeBuffer.Render();
+           Model = glm::mat4(1.0f);
+           Model = glm::translate(Model, glm::vec3(-16.0f, 4.0f, -12.0f + WallIdx * 8));
+           Model = glm::scale(Model, glm::vec3(0.1f, 8.0f, 8.0f));
+           Phong.SetModel(Model);
+           CubeBuffer.Render();
 
         // NOTE(Jovan): East wall
-            Model = glm::mat4(1.0f);
-            Model = glm::translate(Model, glm::vec3(16.0f, 4.0f, -12.0f + WallIdx * 8));
-            Model = glm::scale(Model, glm::vec3(0.1f, 8.0f, 8.0f));
-            Phong.SetModel(Model);
-            CubeBuffer.Render();
+           Model = glm::mat4(1.0f);
+           Model = glm::translate(Model, glm::vec3(16.0f, 4.0f, -12.0f + WallIdx * 8));
+           Model = glm::scale(Model, glm::vec3(0.1f, 8.0f, 8.0f));
+           Phong.SetModel(Model);
+           CubeBuffer.Render();
         }
+        Phong.UnbindTexture(WallTexture);
 
         // NOTE(Jovan): Floor
+        Phong.BindTexture(FloorTexture);
         Model = glm::mat4(1.0f);
         Model = glm::translate(Model, glm::vec3(0.0f, -0.5f, 0.0f));
         Model = glm::scale(Model, glm::vec3(32.0f, 1.0f, 32.0f));
         Model = glm::rotate(Model, glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
         Phong.SetModel(Model);
-        Phong.BindTexture(FloorTexture);
         CubeBuffer.Render();
+        Phong.UnbindTexture(FloorTexture);
 
         Model = glm::mat4(1.0f);
         Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, 0.0f));
@@ -451,10 +324,9 @@ int main() {
         CubeBuffer.Render();
 
         glUseProgram(0);
-
         glfwSwapBuffers(Window);
         
-        // NOTE(Jovan): Time management (might not work)
+        // NOTE(Jovan): Time management (might not work :'()
         EndTime = glfwGetTime();
         float WorkTime = EndTime - StartTime;
         if(WorkTime < TargetFrameTime) {

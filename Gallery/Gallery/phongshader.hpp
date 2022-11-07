@@ -1,6 +1,7 @@
 #pragma once
-#include <vector>
 #include "shader.hpp"
+#include <vector>
+#include <map>
 
 class PointLight {
 public:
@@ -29,13 +30,20 @@ public:
 
 class PhongShader : public Shader {
 private:
+    struct BoundTextureInfo {
+        GLenum Target;
+        unsigned Unit;
+    };
+
     std::vector<PointLight> mPointLights;
+    std::map<unsigned, BoundTextureInfo> mBoundTextures;
 public:
     PhongShader(const std::string& vShaderPath, const std::string& fShaderPath);
     void AddPointLight(const PointLight& light);
-    void BindTexture(const std::string& uniform, unsigned unitIdx, GLenum target, Texture& texture) const;
-    void BindTexture(Texture& texture, GLenum unitIdx = 0) const;
-    void BindDiffuse(Texture& texture, GLenum unitIdx = 0) const;
-    void BindSpecular(Texture& texture, GLenum unitIdx = 0) const;
+    void BindTexture(const std::string& uniform, unsigned unitIdx, GLenum target, Texture& texture);
+    void BindTexture(Texture& texture, unsigned unitIdx = 0);
+    void BindDiffuse(Texture& texture, unsigned unitIdx = 0);
+    void BindSpecular(Texture& texture, unsigned unitIdx = 0);
     void SetViewPosition(const glm::vec3& position) const;
+    void UnbindTexture(Texture& texture);
 };

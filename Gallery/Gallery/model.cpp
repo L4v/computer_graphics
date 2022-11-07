@@ -31,7 +31,7 @@ Model::Load() {
 }
 
 void
-Model::Render(const PhongShader &program) {
+Model::Render(PhongShader &program) {
     mModel = glm::mat4(1.0f);
     mModel = glm::translate(mModel, mPosition);
     mModel = glm::rotate(mModel, glm::radians(mRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
@@ -48,5 +48,8 @@ Model::Render(const PhongShader &program) {
             program.BindTexture(Tex, TexIdx);
         }
         mMeshBuffers[MeshIdx].Render();
+        for (auto Tex : Mesh.mTextures) {
+            program.UnbindTexture(Tex);
+        }
     }
 }
