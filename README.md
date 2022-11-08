@@ -1,4 +1,4 @@
-##Rjesenja zadataka ce biti okacena na kraju sedmice
+## Rjesenja zadataka ce biti okacena na kraju sedmice
 
 # Zadatak 1:
 
@@ -24,6 +24,7 @@ Napisati program koji crta krug poluprečnika 0.5 na sredini ekrana. Krug može 
 
 Kao novopečeni inžinjer svježe zaposleni u neimenovanoj Novosadskoj firmi, dobili ste zadatak da napravite screen-saver u OpenGL-u za buduću generaciju embedded sistema te firme. Screen-saver se sastoji od logo-a firme na crnoj pozadini koji se polako kreće lijevo-desno od jedne ivice ekrana, do druge. Logo je prikazan na slici:
 
+![image](https://github.com/L4v/computer_graphics/blob/week-3/apstraktnaumjetnost.jpg)
 
 # Zadatak 7:
 
