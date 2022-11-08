@@ -1,4 +1,4 @@
-## Rjesenja zadataka ce biti okacena na kraju sedmice
+## Rješenja zadataka će biti okačena na kraju sedmice
 
 # Zadatak 1:
 
