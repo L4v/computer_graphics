@@ -1,4 +1,4 @@
-(Rjesenja zadataka ce biti okacena na kraju sedmice)
+##Rjesenja zadataka ce biti okacena na kraju sedmice
 
 # Zadatak 1:
 
@@ -27,8 +27,8 @@ Kao novopečeni inžinjer svježe zaposleni u neimenovanoj Novosadskoj firmi, do
 
 # Zadatak 7:
 
-Zaposleni kao programer računarske grafike u firmi koja razvija novu video igru, dobili ste zadatak da napravite loading-screen te igre. Loading screen se sastoji od malog narandžastog trougla u donjem desnom uglu ekrana čija boja se smjenjuje od crne do bijele tokom vremena. 
+Zaposleni kao programer računarske grafike u firmi koja razvija novu video igru, dobili ste zadatak da napravite loading-screen te igre. Loading screen se sastoji od malog narandžastog trougla u donjem desnom uglu ekrana koji se utapa u pozadinu tokom vremena ("fading out" efekat). 
 
 # Zadatak 8:
 
-Napisati program koji na ekranu prikazuje kvadrat koji može da se pomijera po ekranu pomoću WSAD tastera, ali ne može preći preko ivica ekrana. Ukoliko trougao dođe do gornjeg desnog ugla ekrana, zatvoriti program.
+Napisati program koji na ekranu prikazuje kvadrat koji može da se pomijera po ekranu pomoću WSAD tastera, ali ne može preći preko ivica ekrana. Ukoliko kvadrat dođe do gornjeg desnog ugla ekrana, prozor se zatvara;
