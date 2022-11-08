@@ -56,7 +56,7 @@ int main() {
 
     Shader BasicProgram("basic.vert", "basic.frag");
 
-    // TODO|TASK: Change to a square
+    // TODO|TASK: Extend with color information
     float TriangleVertices[] = {
         -0.5f, -0.5f, 0.0f,
          0.5f, -0.5f, 0.0f,
