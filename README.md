@@ -2,7 +2,7 @@
 
 # Zadatak 1:
 
-Napisati program koji crta žuti, jednakokraki trougao u gornjem desnom kvadrantu prozora, na tirkiznoj pozadini. Baza trougla je duga 0.3 dužine jednog kvadranta prozora, a kraci su dugi 0.5 dužine jednog kvadranta.
+Napisati program koji crta žuti, jednakokraki trougao u gornjem desnom kvadrantu prozora, na tirkiznoj pozadini. Baza trougla je duga 0.3 dužine jednog kvadranta prozora, a visina je 0.5 dužine jednog kvadranta.
 
 # Zadatak 2:
 
