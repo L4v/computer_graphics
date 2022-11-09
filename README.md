@@ -10,7 +10,7 @@ Napisati program koji crta pravougaoni trougao proizvoljnih dimenzija u lijevoj 
 
 # Zadatak 3:
 
-Napisati program koji na čitavom prozoru crta zastavu drzave po proizvoljnom izboru.
+Napisati program koji na čitavom prozoru crta zastavu države po proizvoljnom izboru.
 
 # Zadatak 4:
 
