@@ -1,7 +1,7 @@
 /**
  * @file main.cpp
  * @author Jovan Ivosevic
- * @brief Base project for Computer Graphics course
+ * @brief Cube drawing
  * @version 0.1
  * @date 2022-10-09
  *
@@ -14,7 +14,7 @@
 
 const int WindowWidth = 800;
 const int WindowHeight = 800;
-const std::string WindowTitle = "Base";
+const std::string WindowTitle = "Cube";
 
 /**
  * @brief Error callback function for GLFW. See GLFW docs for details
