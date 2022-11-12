@@ -1,5 +1,5 @@
 # Računarska grafika
-[:gb:](README.md)  
+Jezik: [:gb:](README.md)
 Materijal za Računarsku grafiku na Fakultetu tehničkih nauka.
 
 ## Sadržaj
@@ -40,7 +40,7 @@ Odaberite "Desktop development with C++" u Visual Studio Installer-u
 	- ![NuGet](/img/nuget0.png)
 	- ![NuGet Restore](/img/nuget_restore.png)
 - Posle toga ste spremni za dalje! Dalje podešavanje neće biti potrebno. Ukoliko naletite na problem, molimo Vas da nas kontaktirate.
-#### ### Napravite svoj projekat
+#### Napravite svoj projekat
 - Napravite novu C/C++ konzolnu aplikaciju u Visual Studio
 - Sa selektovanim .cpp file open, odaberite "Project" u toolbar-u
 - Odaberite Manage "NuGet Packages..."
