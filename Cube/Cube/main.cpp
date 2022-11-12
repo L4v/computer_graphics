@@ -33,6 +33,15 @@ struct Input {
     bool DepthTesting;
 };
 
+/**
+ * @brief Keyboard callback function for GLFW. See GLFW docs for details
+ *
+ * @param window GLFW window context object
+ * @param key Triggered key GLFW code
+ * @param scancode Triggered key scan code
+ * @param action Triggered key action: pressed, released or repeated
+ * @param mode Modifiers
+ */
 static void
 KeyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
     Input* UserInput = (Input*)glfwGetWindowUserPointer(window);
