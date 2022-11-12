@@ -8,7 +8,8 @@ Computer Graphics course material for the Faculty of Technical Sciences.
 	- [Environment](#environment)
 	- [Installation and setup](#installation-and-setup)
 		- [Windows](#windows)
-			- [GiM starter project](#gim-starter-project)
+		- [Setting up Visual Studio](#setting-up-visual-studio)
+			- [Base starter project](#base-starter-project)
 			- [Creating your own project](#creating-your-own-project)
 	- [Linux](#linux)
 		- [Arch based](#arch-based)
@@ -29,6 +30,9 @@ Computer Graphics course material for the Faculty of Technical Sciences.
 ## Installation and setup
 ### Windows
 If you want to use a project with preinstalled packages, you can use the starter project with  all the required libraries already setup.
+### Setting up Visual Studio
+Make sure to select "Desktop development with C++" in Visual Studio Installer
+![Desktop development with C++](/img/desktop_development_cpp.png)
 #### Base starter project
 - From the "base" branch, download the starter project for your course
 - Open it in Visual Studio and check your NuGet packages, you might have to restore them if you're getting build errors
