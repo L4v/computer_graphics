@@ -1,5 +1,5 @@
 # Računarska grafika
-Jezik: [:gb:](README.md)
+Jezik: [:gb:](README.md)  
 Materijal za Računarsku grafiku na Fakultetu tehničkih nauka.
 
 ## Sadržaj
