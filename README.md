@@ -8,13 +8,13 @@ Computer Graphics course material for the Faculty of Technical Sciences.
 	- [Environment](#environment)
 	- [Installation and setup](#installation-and-setup)
 		- [Windows](#windows)
-		- [Setting up Visual Studio](#setting-up-visual-studio)
+			- [Setting up Visual Studio](#setting-up-visual-studio)
 			- [Base starter project](#base-starter-project)
 			- [Creating your own project](#creating-your-own-project)
-	- [Linux](#linux)
-		- [Arch based](#arch-based)
-		- [Debian based](#debian-based)
-		- [Compiling and running](#compiling-and-running)
+		- [Linux](#linux)
+			- [Arch based](#arch-based)
+			- [Debian based](#debian-based)
+			- [Compiling and running](#compiling-and-running)
 
 ## Branches
 - base: Contains the base code which can be expanded upon for projects and learning
@@ -30,7 +30,7 @@ Computer Graphics course material for the Faculty of Technical Sciences.
 ## Installation and setup
 ### Windows
 If you want to use a project with preinstalled packages, you can use the starter project with  all the required libraries already setup.
-### Setting up Visual Studio
+#### Setting up Visual Studio
 Make sure to select "Desktop development with C++" in Visual Studio Installer
 ![Desktop development with C++](/img/desktop_development_cpp.png)
 #### Base starter project
@@ -50,24 +50,24 @@ Make sure to select "Desktop development with C++" in Visual Studio Installer
 - In the same manner install the following NuGet packages:
 	- glew-2.2.0 by NerdTronik
 	- glm by GLM contributors (versions 0.9.9.800 and higher)
-## Linux
+### Linux
 Packages might differ depending on your distro, if not listed, contact ivosevic.jovan@uns.ac.rs to update.
 - Create a folder for your code (you can use the .cpp and .hpp files from the repo)
-### Arch based
+#### Arch based
 > Manjaro, EndeavourOS, etc...
 
 - To install GLM, GLFW and GLEW:
 ```bash
 sudo pacman -S glm glfw glew
 ```
-### Debian based
+#### Debian based
 > Ubuntu, Pop, Deepin, Kali
 
 ```bash
 sudo apt install libglfw3 libglfw3-dev libglm-dev libglew-dev
 ```
 
-### Compiling and running
+#### Compiling and running
 You can use make, cmake or any other build tool, but for most purposes this command will suffice:
 ```bash
 # To compile (run this command inside your code dir, where all the .cpp and .hpp files are). NOTE: pkg-config is surrounded by backticks `, not by quotes '
