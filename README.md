@@ -1,4 +1,5 @@
 # Computer Graphics
+[:serbia:](README.sr.md)  
 Computer Graphics course material for the Faculty of Technical Sciences.
 
 ## Table of Contents
