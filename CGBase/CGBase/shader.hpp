@@ -6,12 +6,11 @@
 
 class Shader {
 public:
-    unsigned mId;
 
     Shader(const std::string& vShaderPath, const std::string& fShaderPath);
-    Shader(const std::string& vShaderPath, const std::string& gShaderPath, const std::string& fShaderPath);
+    unsigned GetId() const;
 private:
+    unsigned mId;
     unsigned loadAndCompileShader(std::string filename, GLuint shaderType);
     unsigned createBasicProgram(unsigned vShader, unsigned fShader);
-    unsigned createBasicProgram(unsigned vShader, unsigned gShader, unsigned fShader);
 };

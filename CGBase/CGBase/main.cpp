@@ -55,6 +55,8 @@ int main() {
         return -1;
     }
 
+    Shader Basic("shaders/basic.vert", "shaders/basic.frag");
+
     glfwSetErrorCallback(ErrorCallback);
 
     while (!glfwWindowShouldClose(Window)) {
@@ -62,6 +64,7 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // TODO(Jovan): Draw code goes here
+
 
         glfwSwapBuffers(Window);
     }

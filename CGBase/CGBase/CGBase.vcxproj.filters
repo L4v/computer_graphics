@@ -24,6 +24,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="shaders\basic.vert" />
+    <None Include="shaders\basic.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader.hpp">

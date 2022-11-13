@@ -7,13 +7,6 @@ Shader::Shader(const std::string& vShaderPath, const std::string& fShaderPath) {
     mId = createBasicProgram(vs, fs);
 }
 
-Shader::Shader(const std::string& vShaderPath, const std::string& gShaderPath, const std::string& fShaderPath) {
-    unsigned vs = loadAndCompileShader(vShaderPath, GL_VERTEX_SHADER);
-    unsigned gs = loadAndCompileShader(gShaderPath, GL_GEOMETRY_SHADER);
-    unsigned fs = loadAndCompileShader(fShaderPath, GL_FRAGMENT_SHADER);
-    mId = createBasicProgram(vs, gs, fs);
-}
-
 unsigned
 Shader::loadAndCompileShader(std::string filename, GLuint shaderType) {
     unsigned ShaderID = 0;
@@ -72,29 +65,6 @@ Shader::createBasicProgram(unsigned vShader, unsigned fShader) {
 }
 
 unsigned
-Shader::createBasicProgram(unsigned vShader, unsigned gShader, unsigned fShader) {
-    unsigned ProgramID = 0;
-    ProgramID = glCreateProgram();
-    glAttachShader(ProgramID, vShader);
-    glAttachShader(ProgramID, gShader);
-    glAttachShader(ProgramID, fShader);
-    glLinkProgram(ProgramID);
-
-    int Success;
-    char InfoLog[512];
-    glGetProgramiv(ProgramID, GL_LINK_STATUS, &Success);
-    if (!Success) {
-        glGetProgramInfoLog(ProgramID, 512, NULL, InfoLog);
-        std::cerr << "[Err] Failed to link shader program:" << std::endl << InfoLog << std::endl;
-        return 0;
-    }
-
-    glDetachShader(ProgramID, vShader);
-    glDetachShader(ProgramID, gShader);
-    glDetachShader(ProgramID, fShader);
-    glDeleteShader(vShader);
-    glDeleteShader(gShader);
-    glDeleteShader(fShader);
-
-    return ProgramID;
+Shader::GetId() const {
+    return mId;
 }
