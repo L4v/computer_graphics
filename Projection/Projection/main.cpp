@@ -10,9 +10,7 @@
  */
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 #include <iostream>
-#include "shader.hpp"
 
 const int WindowWidth = 800;
 const int WindowHeight = 800;
@@ -55,8 +53,6 @@ int main() {
         return -1;
     }
 
-    Shader Basic("shaders/basic.vert", "shaders/basic.frag");
-
     glfwSetErrorCallback(ErrorCallback);
 
     while (!glfwWindowShouldClose(Window)) {
@@ -64,7 +60,6 @@ int main() {
         glClear(GL_COLOR_BUFFER_BIT);
 
         // TODO(Jovan): Draw code goes here
-
 
         glfwSwapBuffers(Window);
     }
