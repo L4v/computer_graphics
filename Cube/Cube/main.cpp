@@ -197,7 +197,6 @@ int main() {
     glm::mat4 Projection = glm::perspective(45.0f, WindowWidth / (float)WindowHeight, 0.1f, 100.0f);
     glm::mat4 View = glm::lookAt(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-
     while (!glfwWindowShouldClose(Window)) {
         if (UserInput.DepthTesting) {
             glEnable(GL_DEPTH_TEST);
@@ -216,16 +215,19 @@ int main() {
         // TODO(Jovan): Indexed drawing
         switch (UserInput.CurrentDrawing) {
             case 0: {
-                Basic.SetUniform4m("uMVP", Projection* View* Model);
+                Basic.SetUniform4m("uMVP", Projection * View * Model);
                 glBindVertexArray(QuadVAO);
                 glDrawArrays(GL_TRIANGLES, 0, QuadVertices.size() / 3);
             }; break;
             case 1: {
                 static float angle = 1.0f;
-                Model = glm::rotate(Model, glm::radians(++angle), glm::vec3(1.0f, 1.0f, 1.0));
-                Basic.SetUniform4m("uMVP", Projection* View* Model);
+                Model = glm::rotate(Model, glm::radians(angle), glm::vec3(1.0f, 1.0f, 1.0));
+                Basic.SetUniform4m("uMVP", Projection * View * Model);
                 glBindVertexArray(CubeVAO);
                 glDrawArrays(GL_TRIANGLES, 0, CubeVertices.size() / 3);
+                // NOTE(Jovan): If the Cube starts spinning really fast or really slow, adjust this value.
+                // This is due to a lack of frame syncing
+                angle += 0.1f;
             }; break;
         }
 
