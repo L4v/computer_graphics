@@ -11,6 +11,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include "shader.hpp"
+#include "cube.hpp"
+#include "buffer.hpp"
 
 const int WindowWidth = 800;
 const int WindowHeight = 800;
@@ -55,12 +60,34 @@ int main() {
 
     glfwSetErrorCallback(ErrorCallback);
 
+    glViewport(0.0f, 0.0f, WindowWidth, WindowHeight);
+
+    Shader BasicShader("shaders/basic.vert", "shaders/basic.frag");
+    float RenderDistance = 100.0f;
+    glm::mat4 Model(1.0f);
+    glm::mat4 Projection = glm::perspective(45.0f, WindowWidth / (float)WindowHeight, 0.1f, 100.0f);
+    glm::mat4 View = glm::lookAt(glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+    Cube BasicCube;
+    Buffer CubeBuffer(BasicCube);
+
+    glEnable(GL_DEPTH_TEST);
     while (!glfwWindowShouldClose(Window)) {
         glfwPollEvents();
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // TODO(Jovan): Draw code goes here
+        glUseProgram(BasicShader.GetId());
+        BasicShader.SetProjection(Projection);
+        BasicShader.SetView(View);
 
+        Model = glm::mat4(1.0f);
+        Model = glm::translate(Model, glm::vec3(0.0f, 0.0f, -2.0f));
+        Model = glm::rotate(Model, glm::radians(45.0f), glm::vec3(1.0f));
+        BasicShader.SetUniform4m("uView", Projection * View * Model);
+        CubeBuffer.Render();
+
+        glUseProgram(0);
         glfwSwapBuffers(Window);
     }
 
