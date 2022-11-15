@@ -31,6 +31,9 @@ Mesh::processMesh(const aiMesh* mesh, aiMaterial* MeshMaterial, const std::strin
     for (unsigned VertexIndex = 0; VertexIndex < mesh->mNumVertices; ++VertexIndex) {
         std::vector<float> Position = { mesh->mVertices[VertexIndex].x, mesh->mVertices[VertexIndex].y, mesh->mVertices[VertexIndex].z };
         mVertices.insert(mVertices.end(), Position.begin(), Position.end());
+        // NOTE(Jovan): Normals are used as color data for now
+        std::vector<float> Normals = { mesh->mNormals[VertexIndex].x, mesh->mNormals[VertexIndex].y, mesh->mNormals[VertexIndex].z };
+        mVertices.insert(mVertices.end(), Normals.begin(), Normals.end());
     }
 
     for (unsigned FaceIndex = 0; FaceIndex < mesh->mNumFaces; ++FaceIndex) {

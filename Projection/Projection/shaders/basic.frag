@@ -7,5 +7,5 @@ in vertex_out {
 } FragmentIn;
 
 void main() {
-	FragColour = vec4(1.0f);
+	FragColour = vec4(FragmentIn.FragColour, 1.0f);
 }

@@ -13,7 +13,7 @@ Shader::GetId() const {
 
 void
 Shader::SetUniform4m(const std::string& uniform, const glm::mat4& m) const {
-    glUniformMatrix4fv(glGetUniformLocation(mId, "uMVP"), 1, GL_FALSE, &m[0][0]);
+    glUniformMatrix4fv(glGetUniformLocation(mId, uniform.c_str()), 1, GL_FALSE, &m[0][0]);
 }
 
 void

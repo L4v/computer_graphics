@@ -13,6 +13,6 @@ private:
 	unsigned mIndexCount;
 	unsigned mVertexCount;
 public:
-	Buffer(IRenderObject& renderObject, int stride = 6 * sizeof(float));
+	Buffer(IRenderObject& renderObject);
 	void Render();
 };

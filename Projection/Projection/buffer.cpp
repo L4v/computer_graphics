@@ -1,7 +1,7 @@
 #include "buffer.hpp"
 #include <iostream>
 
-Buffer::Buffer(IRenderObject& renderObject, int stride) : mEBO(0) {
+Buffer::Buffer(IRenderObject& renderObject) : mEBO(0) {
     mIndexCount = renderObject.GetIndexCount();
     mVertexCount = renderObject.GetVertexCount() / renderObject.GetVertexElementCount();
     glGenVertexArrays(1, &mVAO);
@@ -11,10 +11,11 @@ Buffer::Buffer(IRenderObject& renderObject, int stride) : mEBO(0) {
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
     glBufferData(GL_ARRAY_BUFFER, renderObject.GetVertexCount() * sizeof(float), renderObject.GetVertices(), GL_STATIC_DRAW);
 
-    glVertexAttribPointer(POSITION_LOCATION, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
+    float Stride = renderObject.GetVertexElementCount() * sizeof(float);
+    glVertexAttribPointer(POSITION_LOCATION, 3, GL_FLOAT, GL_FALSE, Stride, (void*)0);
     glEnableVertexAttribArray(POSITION_LOCATION);
 
-    glVertexAttribPointer(COLOUR_LOCATION, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(COLOUR_LOCATION, 3, GL_FLOAT, GL_FALSE, Stride, (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(COLOUR_LOCATION);
 
     if (mIndexCount) {
