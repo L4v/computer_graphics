@@ -29,14 +29,7 @@ Model::Load() {
 }
 
 void
-Model::Render(Shader &program) {
-    mModel = glm::mat4(1.0f);
-    mModel = glm::translate(mModel, mPosition);
-    mModel = glm::rotate(mModel, glm::radians(mRotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-    mModel = glm::rotate(mModel, glm::radians(mRotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-    mModel = glm::rotate(mModel, glm::radians(mRotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-    mModel = glm::scale(mModel, mScale);
-
+Model::Render() {
     for(unsigned MeshIdx = 0; MeshIdx < mMeshes.size(); ++MeshIdx) {
         Mesh &Mesh = mMeshes[MeshIdx];
         mMeshBuffers[MeshIdx].Render();

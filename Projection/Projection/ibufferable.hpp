@@ -1,5 +1,5 @@
 #pragma once
-class IRenderObject {
+class IBufferable {
 public:
 	virtual float* GetVertices() = 0;
 	virtual unsigned* GetIndices() {

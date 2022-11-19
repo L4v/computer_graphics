@@ -2,9 +2,9 @@
 
 #include <assimp/scene.h>
 #include<vector>
-#include "irenderobject.hpp"
+#include "ibufferable.hpp"
 
-class Mesh : public IRenderObject {
+class Mesh : public IBufferable {
 public:
     std::vector<unsigned> mIndices;
     std::vector<float> mVertices;

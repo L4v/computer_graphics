@@ -1,13 +1,15 @@
 #pragma once
 #include <vector>
-#include "irenderobject.hpp"
 
-class Cube : public IRenderObject {
-private:
-    static std::vector<float> mVertices;
+#include "irenderable.hpp"
+#include "cubebuffer.hpp"
+#include "buffer.hpp"
+
+class Cube : public IRenderable {
 public:
     Cube();
-    virtual float* GetVertices();
-    virtual unsigned GetVertexCount();
-    virtual unsigned GetVertexElementCount();
+    void Render();
+private:
+    Buffer* mBuffer;
+
 };

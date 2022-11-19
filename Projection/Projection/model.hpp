@@ -11,6 +11,7 @@
 #include "shader.hpp"
 #include "mesh.hpp"
 #include "buffer.hpp"
+#include "irenderable.hpp"
 
 
 #define POSITION_LOCATION 0
@@ -26,7 +27,7 @@ enum EBufferType {
     BUFFER_COUNT = 4,
 };
 
-class Model {
+class Model : public IRenderable {
 private:
     std::vector<Mesh> mMeshes;
     std::vector<Buffer> mMeshBuffers;
@@ -37,14 +38,13 @@ private:
 public:
     std::string mFilename;
     std::string mDirectory;
-    glm::mat4 mModel;
     glm::vec3 mPosition;
     glm::vec3 mRotation;
     glm::vec3 mScale;
 
     Model(std::string filename);
     bool Load();
-    void Render(Shader &program);
+    void Render();
 
 };
 

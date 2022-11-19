@@ -1,64 +1,12 @@
 #include "cube.hpp"
+#include "cubebuffer.hpp"
 
-std::vector<float> Cube::mVertices = {
-    //      POS        |     COLOURS   
-        // X    Y      Z       R    G     B
-        -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
-        0.5f, 0.5f, -0.5f,   1.0f, 0.0f, 0.0f,
-        0.5f, 0.5f, -0.5f,   1.0f, 0.0f, 0.0f,
-        -0.5f, 0.5f, -0.5f,  1.0f, 0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-
-        -0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-        0.5f, -0.5f, 0.5f,  0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, 0.5f,   0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, 0.5f,   0.0f, 1.0f, 0.0f,
-        -0.5f, 0.5f, 0.5f,  0.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-
-        -0.5f, 0.5f, 0.5f,  0.0f, 0.0f, 1.0f,
-        -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,0.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-        -0.5f, 0.5f, 0.5f,  0.0f, 0.0f, 1.0f,
-
-        0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, -0.5f, 1.0f, 1.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,1.0f, 1.0f, 0.0f,
-        0.5f, -0.5f, -0.5f,1.0f, 1.0f, 0.0f,
-        0.5f, -0.5f, 0.5f, 1.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, 0.5f,  1.0f, 1.0f, 0.0f,
-
-        -0.5f, -0.5f, -0.5f,1.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, 0.5f,  1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,1.0f, 0.0f, 1.0f,
-
-        -0.5f, 0.5f, -0.5f,0.0f, 1.0f, 1.0f,
-        0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 1.0f,
-        0.5f, 0.5f, 0.5f,  0.0f, 1.0f, 1.0f,
-        0.5f, 0.5f, 0.5f,  0.0f, 1.0f, 1.0f,
-        -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 1.0f,
-        -0.5f, 0.5f, -0.5f,0.0f, 1.0f, 1.0f
-};
-
-Cube::Cube() {}
-
-float*
-Cube::GetVertices() {
-	return mVertices.data();
+Cube::Cube() {
+    CubeBuffer CubeBuffer;
+    mBuffer = new Buffer(CubeBuffer);
 }
 
-unsigned
-Cube::GetVertexCount() {
-	return mVertices.size();
-}
-
-unsigned
-Cube::GetVertexElementCount() {
-	return 6;
+void
+Cube::Render() {
+    mBuffer->Render();
 }

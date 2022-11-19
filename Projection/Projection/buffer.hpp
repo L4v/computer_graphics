@@ -1,6 +1,7 @@
 #pragma once
 #include <GL/glew.h>
-#include "irenderobject.hpp"
+#include <iostream>
+#include "ibufferable.hpp"
 
 #define POSITION_LOCATION 0
 #define COLOUR_LOCATION 1
@@ -13,6 +14,6 @@ private:
 	unsigned mIndexCount;
 	unsigned mVertexCount;
 public:
-	Buffer(IRenderObject& renderObject);
+	Buffer(IBufferable& renderObject);
 	void Render();
 };
