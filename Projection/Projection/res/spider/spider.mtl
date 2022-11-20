@@ -1,0 +1,156 @@
+#
+#
+#
+
+newmtl Auge Mesh_Augentex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd engineflare1.jpg
+
+newmtl Bein1Li Mesh_BeinTex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd drkwood2.jpg
+
+newmtl Bein1Re Mesh_BeinTex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd drkwood2.jpg
+
+newmtl Bein2Li Mesh_BeinTex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd drkwood2.jpg
+
+newmtl Bein2Re Mesh_BeinTex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd drkwood2.jpg
+
+newmtl Bein3Li Mesh_BeinTex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd drkwood2.jpg
+
+newmtl Bein3Re Mesh_BeinTex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd drkwood2.jpg
+
+newmtl Bein4Li Mesh_BeinTex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd drkwood2.jpg
+
+newmtl Bein4Re Mesh_BeinTex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd drkwood2.jpg
+
+newmtl Brust Mesh_Skin
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.827451 0.792157 0.772549
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd wal67ar_small.jpg
+
+newmtl Duplicate05 Mesh_Augentex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd engineflare1.jpg
+
+newmtl HLeib01 Mesh_HLeibTex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.690196 0.639216 0.615686
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd SpiderTex.jpg
+
+newmtl Kopf Mesh_Skin
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.827451 0.792157 0.772549
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd wal67ar_small.jpg
+
+newmtl Kopf2 Mesh_Skin
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.827451 0.792157 0.772549
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd wal67ar_small.jpg
+
+newmtl OK Mesh_Skin
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.827451 0.792157 0.772549
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd wal67ar_small.jpg
+
+newmtl Zahn Mesh_BeinTex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd drkwood2.jpg
+
+newmtl Zahn2 Mesh_BeinTex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd drkwood2.jpg
+
+newmtl klZahn Mesh_BeinTex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd drkwood2.jpg
+
+newmtl klZahn2 Mesh_BeinTex
+illum 2
+Ka 0.200000 0.200000 0.200000
+Kd 0.800000 0.800000 0.800000
+Ks 0.000000 0.000000 0.000000
+Ns 0.000000
+map_Kd drkwood2.jpg
+
