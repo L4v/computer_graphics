@@ -48,14 +48,19 @@ struct Input {
     bool ChangeRenderable;
 };
 
-struct EngineState {
-    OrbitalCamera* mOrbitalCamera;
-    Input* mInput;
-    float mDT;
+struct Renderer {
     unsigned mCurrRenderableIdx;
     IRenderable* mCurrRenderable;
     std::vector<IRenderable*> mRenderables;
+    glm::vec2 mFramebufferSize;
     float mScalingFactor;
+};
+
+struct EngineState {
+    OrbitalCamera* mOrbitalCamera;
+    Input* mInput;
+    Renderer* mRenderer;
+    float mDT;
 };
 
 /**
@@ -103,28 +108,43 @@ KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
 static void
 ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     EngineState* State = (EngineState*)glfwGetWindowUserPointer(window);
-    State->mScalingFactor += yoffset * State->mDT;
+    State->mRenderer->mScalingFactor += yoffset * State->mDT;
 }
 
+/**
+ * @brief Framebuffer resize callback
+ *
+ * @param window GLFW window context object
+ * @param width New framebuffer width
+ * @param height New framebuffer height
+ */
+static void
+FramebufferSizeCallback(GLFWwindow* window, int width, int height) {
+    EngineState* State = (EngineState*)glfwGetWindowUserPointer(window);
+    Renderer* Renderer = State->mRenderer;
+    Renderer->mFramebufferSize = glm::vec2(width, height);
+}
+
+/**
+ * @brief Updates engine state based on input
+ *
+ * @param state Engine State
+ */
 static void
 HandleInput(EngineState* state) {
     Input* UserInput = state->mInput;
     OrbitalCamera* Camera = state->mOrbitalCamera;
+    Renderer* Renderer = state->mRenderer;
     float dt = state->mDT;
     if(UserInput->Left) Camera->Rotate(-1.0f, 0.0f, dt);
     if(UserInput->Right) Camera->Rotate(1.0f, 0.0f, dt);
     if(UserInput->Down) Camera->Rotate(0.0f, 1.0f, dt);
     if(UserInput->Up) Camera->Rotate(0.0f, -1.0f, dt);
     if(UserInput->ChangeRenderable) {
-        state->mCurrRenderableIdx = ++state->mCurrRenderableIdx % state->mRenderables.size();
-        state->mCurrRenderable = state->mRenderables[state->mCurrRenderableIdx];
+        Renderer->mCurrRenderableIdx = ++Renderer->mCurrRenderableIdx % Renderer->mRenderables.size();
+        Renderer->mCurrRenderable = Renderer->mRenderables[Renderer->mCurrRenderableIdx];
         UserInput->ChangeRenderable ^= true;
     }
-}
-
-template <typename T>
-void RenderTarget(T target) {
-    target.Render();
 }
 
 int main() {
@@ -149,6 +169,7 @@ int main() {
     glfwMakeContextCurrent(Window);
     glfwSetKeyCallback(Window, KeyCallback);
     glfwSetScrollCallback(Window, ScrollCallback);
+    glfwSetFramebufferSizeCallback(Window, FramebufferSizeCallback);
 
     GLenum GlewError = glewInit();
     if (GlewError != GLEW_OK) {
@@ -158,11 +179,6 @@ int main() {
     }
 
     OrbitalCamera Camera(45.0f, 5.0f);
-    Input UserInput = {0};
-    EngineState State = {0};
-    State.mOrbitalCamera = &Camera;
-    State.mInput = &UserInput;
-    glfwSetWindowUserPointer(Window, &State);
 
     Shader BasicShader("shaders/basic.vert", "shaders/basic.frag");
     float RenderDistance = 100.0f;
@@ -171,11 +187,6 @@ int main() {
     glm::mat4 FrontView = glm::lookAt(glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.0f, 0.0f, -1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 LeftView = glm::lookAt(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     glm::mat4 TopView = glm::lookAt(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-
-    float HalfWindowWidth = WindowWidth / 2.0f;
-    float HalfWindowHeight = WindowHeight / 2.0f;
-    glm::mat4 Perspective = glm::perspective(45.0f, WindowWidth / (float)WindowHeight, 0.1f, RenderDistance);
-    glm::mat4 Ortho = glm::ortho(-0.5f, 0.5f, -0.5f, 0.5f, 0.1f, RenderDistance);
 
     Cube BasicCube;
     Model Fox("res/low-poly-fox/low-poly-fox.obj");
@@ -198,24 +209,37 @@ int main() {
         glfwTerminate();
         return -1;
     }
+    
+    Renderer Renderer = { 0 };
+    Renderer.mFramebufferSize = glm::vec2(WindowWidth, WindowHeight);
+    Renderer.mRenderables.push_back(&BasicCube);
+    Renderer.mRenderables.push_back(&Amongus);
+    Renderer.mRenderables.push_back(&Fox);
+    Renderer.mRenderables.push_back(&Alduin);
+    Renderer.mCurrRenderable = Renderer.mRenderables[0];
+    Renderer.mScalingFactor = 1.0f;
 
-    State.mRenderables.push_back(&BasicCube);
-    State.mRenderables.push_back(&Amongus);
-    State.mRenderables.push_back(&Fox);
-    State.mRenderables.push_back(&Alduin);
-    State.mCurrRenderable = State.mRenderables[0];
-    State.mScalingFactor = 1.0f;
+    EngineState State = { 0 };
+    Input UserInput = { 0 };
+    glfwSetWindowUserPointer(Window, &State);
+    State.mOrbitalCamera = &Camera;
+    State.mInput = &UserInput;
+    State.mRenderer = &Renderer;
 
     float StartTime = glfwGetTime();
     float EndTime = glfwGetTime();
     float TargetFrameTime = 1.0f / TargetFPS;
 
     glEnable(GL_DEPTH_TEST);
-
-    bool Case = false;
+    /** NOTE(Jovan) : The main loop from a higher - level overview :
+    * Retrieve inputs
+    * Update state
+    * Render result
+    */
     while (!glfwWindowShouldClose(Window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glfwPollEvents();
+
         HandleInput(&State);
 
         StartTime = glfwGetTime();
@@ -224,46 +248,57 @@ int main() {
         FreeView = glm::lookAt(Camera.mPosition, Camera.mPosition + Camera.mFront, Camera.mUp);
         BasicShader.SetView(FreeView);
 
+        float HalfWindowWidth = Renderer.mFramebufferSize.x / 2.0f;
+        float HalfWindowHeight = Renderer.mFramebufferSize.y / 2.0f;
+
+        // NOTE(Jovan): These calls are expensive and should be optimized by executing
+        // them only when the framebuffer's size changes. This is for demo purposes only
+        glm::mat4 Perspective = glm::perspective(45.0f, Renderer.mFramebufferSize.x / (float)Renderer.mFramebufferSize.y, 0.1f, RenderDistance);
+
+        // NOTE(Jovan): Since ortho's values are constant, when the window is resized it gives "stretched" results
+        glm::mat4 Ortho = glm::ortho(-0.5f, 0.5f, -0.5f, 0.5f, 0.1f, RenderDistance);
+
         // NOTE(Jovan): Bottom right viewport
         glViewport(HalfWindowWidth, 0, HalfWindowWidth, HalfWindowHeight);
         BasicShader.SetProjection(Perspective);
         ModelMatrix = glm::mat4(1.0f);
-        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(State.mScalingFactor));
+        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(Renderer.mScalingFactor));
         BasicShader.SetModel(ModelMatrix);
-        State.mCurrRenderable->Render();
+        Renderer.mCurrRenderable->Render();
 
         // NOTE(Jovan): Upper left viewport
         glViewport(0, HalfWindowHeight, HalfWindowWidth, HalfWindowHeight);
         BasicShader.SetProjection(Ortho);
         BasicShader.SetView(FrontView);
         ModelMatrix = glm::mat4(1.0f);
-        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(State.mScalingFactor));
+        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(Renderer.mScalingFactor));
         BasicShader.SetModel(ModelMatrix);
-        State.mCurrRenderable->Render();
+        Renderer.mCurrRenderable->Render();
 
         // NOTE(Jovan): Upper right viewport
         glViewport(HalfWindowWidth, HalfWindowHeight, HalfWindowWidth, HalfWindowHeight);
         BasicShader.SetProjection(Ortho);
         BasicShader.SetView(LeftView);
         ModelMatrix = glm::mat4(1.0f);
-        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(State.mScalingFactor));
+        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(Renderer.mScalingFactor));
         BasicShader.SetModel(ModelMatrix);
-        State.mCurrRenderable->Render();
+        Renderer.mCurrRenderable->Render();
 
         // NOTE(Jovan): Bottom left viewport
         glViewport(0, 0, HalfWindowWidth, HalfWindowHeight);
         BasicShader.SetProjection(Ortho);
         BasicShader.SetView(TopView);
         ModelMatrix = glm::mat4(1.0f);
-        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(State.mScalingFactor));
+        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(Renderer.mScalingFactor));
         BasicShader.SetModel(ModelMatrix);
-        State.mCurrRenderable->Render();
+        Renderer.mCurrRenderable->Render();
         glUseProgram(0);
         glfwSwapBuffers(Window);
 
-        //NOTE(Jovan): Reset user input after each frame
-        UserInput = {0};
-        // NOTE(Jovan): Time management (might not work :'()
+        //NOTE(Jovan): Clear user input values after each frame
+        UserInput = { 0 };
+
+        // NOTE(Jovan): Time management (might not work :'c)
         EndTime = glfwGetTime();
         float WorkTime = EndTime - StartTime;
         if(WorkTime < TargetFrameTime) {
