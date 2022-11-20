@@ -2,6 +2,9 @@
  * @file main.cpp
  * @author Jovan Ivosevic
  * @brief Projections showcase
+ * R - Changers rendered object
+ * W, A, S, D - Rotates camera
+ * Scroll - Changes scale
  * @version 0.1
  * @date 2022-10-09
  *
@@ -43,7 +46,6 @@ struct Input {
     bool Up;
     bool Down;
     bool ChangeRenderable;
-    float ScrollOffset;
 };
 
 struct EngineState {
@@ -53,7 +55,7 @@ struct EngineState {
     unsigned mCurrRenderableIdx;
     IRenderable* mCurrRenderable;
     std::vector<IRenderable*> mRenderables;
-    float mScaleFactor;
+    float mScalingFactor;
 };
 
 /**
@@ -101,7 +103,7 @@ KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
 static void
 ScrollCallback(GLFWwindow* window, double xoffset, double yoffset) {
     EngineState* State = (EngineState*)glfwGetWindowUserPointer(window);
-    State->mInput->ScrollOffset = yoffset;
+    State->mScalingFactor += yoffset * State->mDT;
 }
 
 static void
@@ -117,10 +119,6 @@ HandleInput(EngineState* state) {
         state->mCurrRenderableIdx = ++state->mCurrRenderableIdx % state->mRenderables.size();
         state->mCurrRenderable = state->mRenderables[state->mCurrRenderableIdx];
         UserInput->ChangeRenderable ^= true;
-    }
-    if(UserInput->ScrollOffset) {
-        float NewScaleFactor = state->mScaleFactor + UserInput->ScrollOffset * dt;
-        state->mScaleFactor = Clamp(NewScaleFactor, 1e-4f, 1e2f);
     }
 }
 
@@ -180,25 +178,33 @@ int main() {
     glm::mat4 Ortho = glm::ortho(-0.5f, 0.5f, -0.5f, 0.5f, 0.1f, RenderDistance);
 
     Cube BasicCube;
-    Model Fox("res/lowpolyfox.obj");
+    Model Fox("res/low-poly-fox/low-poly-fox.obj");
     if(!Fox.Load()) {
         std::cerr << "Failed to load model" << std::endl;
         glfwTerminate();
         return -1;
     }
 
-    Model Cottage("res/cottage.obj");
-    if(!Fox.Load()) {
+    Model Alduin("res/alduin/alduin-dragon.obj");
+    if (!Alduin.Load()) {
+        std::cerr << "Failed to load model" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+
+    Model Amongus("res/amongus/amongus.obj");
+    if (!Amongus.Load()) {
         std::cerr << "Failed to load model" << std::endl;
         glfwTerminate();
         return -1;
     }
 
     State.mRenderables.push_back(&BasicCube);
+    State.mRenderables.push_back(&Amongus);
     State.mRenderables.push_back(&Fox);
-    State.mRenderables.push_back(&Cottage);
-    State.mCurrRenderable = State.mRenderables[1];
-    State.mScaleFactor = 1.0f;
+    State.mRenderables.push_back(&Alduin);
+    State.mCurrRenderable = State.mRenderables[0];
+    State.mScalingFactor = 1.0f;
 
     float StartTime = glfwGetTime();
     float EndTime = glfwGetTime();
@@ -222,7 +228,7 @@ int main() {
         glViewport(HalfWindowWidth, 0, HalfWindowWidth, HalfWindowHeight);
         BasicShader.SetProjection(Perspective);
         ModelMatrix = glm::mat4(1.0f);
-        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(State.mScaleFactor));
+        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(State.mScalingFactor));
         BasicShader.SetModel(ModelMatrix);
         State.mCurrRenderable->Render();
 
@@ -231,7 +237,7 @@ int main() {
         BasicShader.SetProjection(Ortho);
         BasicShader.SetView(FrontView);
         ModelMatrix = glm::mat4(1.0f);
-        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(State.mScaleFactor));
+        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(State.mScalingFactor));
         BasicShader.SetModel(ModelMatrix);
         State.mCurrRenderable->Render();
 
@@ -240,7 +246,7 @@ int main() {
         BasicShader.SetProjection(Ortho);
         BasicShader.SetView(LeftView);
         ModelMatrix = glm::mat4(1.0f);
-        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(State.mScaleFactor));
+        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(State.mScalingFactor));
         BasicShader.SetModel(ModelMatrix);
         State.mCurrRenderable->Render();
 
@@ -249,10 +255,9 @@ int main() {
         BasicShader.SetProjection(Ortho);
         BasicShader.SetView(TopView);
         ModelMatrix = glm::mat4(1.0f);
-        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(State.mScaleFactor));
+        ModelMatrix = glm::scale(ModelMatrix, glm::vec3(State.mScalingFactor));
         BasicShader.SetModel(ModelMatrix);
         State.mCurrRenderable->Render();
-
         glUseProgram(0);
         glfwSwapBuffers(Window);
 

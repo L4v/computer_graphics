@@ -143,19 +143,25 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="buffer.cpp" />
+    <ClCompile Include="camera.cpp" />
     <ClCompile Include="cube.cpp" />
+    <ClCompile Include="cubebuffer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="main" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.hpp" />
+    <ClInclude Include="camera.hpp" />
     <ClInclude Include="cube.hpp" />
-    <ClInclude Include="irenderobject.hpp" />
+    <ClInclude Include="cubebuffer.hpp" />
+    <ClInclude Include="ibufferable.hpp" />
+    <ClInclude Include="irenderable.hpp" />
     <ClInclude Include="mesh.hpp" />
     <ClInclude Include="model.hpp" />
     <ClInclude Include="shader.hpp" />

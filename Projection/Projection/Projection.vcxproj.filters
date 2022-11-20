@@ -33,15 +33,19 @@
     <ClCompile Include="cube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="cubebuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="main" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="buffer.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="irenderobject.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mesh.hpp">
@@ -54,6 +58,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="cube.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cubebuffer.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ibufferable.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="irenderable.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

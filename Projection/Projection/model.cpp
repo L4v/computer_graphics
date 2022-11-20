@@ -24,7 +24,7 @@ Model::Load() {
         mMeshBuffers.push_back(Buffer(CurrMesh));
 
     }
-    std::cout << "Loaded " << mMeshes.size() << " meshes" << std::endl;
+    std::cout << mFilename << " Loaded " << mMeshes.size() << " meshes" << std::endl;
     return true;
 }
 

@@ -34,6 +34,10 @@ Mesh::processMesh(const aiMesh* mesh, aiMaterial* MeshMaterial, const std::strin
         // NOTE(Jovan): Normals are used as color data for now
         std::vector<float> Normals = { mesh->mNormals[VertexIndex].x, mesh->mNormals[VertexIndex].y, mesh->mNormals[VertexIndex].z };
         mVertices.insert(mVertices.end(), Normals.begin(), Normals.end());
+        /*aiColor4D Color = { 1.0f, 1.0f, 1.0f, 1.0f };
+        aiGetMaterialColor(MeshMaterial, AI_MATKEY_COLOR_DIFFUSE, &Color);
+        std::vector<float> VertexColor = { Color.r, Color.g, Color.b };
+        mVertices.insert(mVertices.end(), VertexColor.begin(), VertexColor.end());*/
     }
 
     for (unsigned FaceIndex = 0; FaceIndex < mesh->mNumFaces; ++FaceIndex) {

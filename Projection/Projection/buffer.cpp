@@ -1,16 +1,16 @@
 #include "buffer.hpp"
 
-Buffer::Buffer(IBufferable& bufferableobject) : mEBO(0) {
-    mIndexCount = bufferableobject.GetIndexCount();
-    mVertexCount = bufferableobject.GetVertexCount() / bufferableobject.GetVertexElementCount();
+Buffer::Buffer(IBufferable& bufferable) : mEBO(0) {
+    mIndexCount = bufferable.GetIndexCount();
+    mVertexCount = bufferable.GetVertexCount() / bufferable.GetVertexElementCount();
     glGenVertexArrays(1, &mVAO);
     glBindVertexArray(mVAO);
 
     glGenBuffers(1, &mVBO);
     glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBufferData(GL_ARRAY_BUFFER, bufferableobject.GetVertexCount() * sizeof(float), bufferableobject.GetVertices(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, bufferable.GetVertexCount() * sizeof(float), bufferable.GetVertices(), GL_STATIC_DRAW);
 
-    float Stride = bufferableobject.GetVertexElementCount() * sizeof(float);
+    float Stride = bufferable.GetVertexElementCount() * sizeof(float);
     glVertexAttribPointer(POSITION_LOCATION, 3, GL_FLOAT, GL_FALSE, Stride, (void*)0);
     glEnableVertexAttribArray(POSITION_LOCATION);
 
@@ -20,7 +20,7 @@ Buffer::Buffer(IBufferable& bufferableobject) : mEBO(0) {
     if (mIndexCount) {
         glGenBuffers(1, &mEBO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mEBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, bufferableobject.GetIndexCount() * sizeof(float), bufferableobject.GetIndices(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, bufferable.GetIndexCount() * sizeof(float), bufferable.GetIndices(), GL_STATIC_DRAW);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
 

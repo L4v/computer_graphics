@@ -1,3 +1,14 @@
+/**
+ * @file model.hpp
+ * @author Jovan Ivosevic
+ * @brief Model wrapper class
+ * @version 0.1
+ * @date 2022-10-09
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #ifndef MESH_H
 
 #include <assimp/Importer.hpp>
@@ -38,12 +49,26 @@ private:
 public:
     std::string mFilename;
     std::string mDirectory;
-    glm::vec3 mPosition;
-    glm::vec3 mRotation;
-    glm::vec3 mScale;
 
+    /**
+     * @brief Ctor - sets up data for model loading in Assimp
+     *
+     * @param filename - Model path
+     *
+     */
     Model(std::string filename);
+
+    /**
+     * @brief Loads all the meshes and model data
+     *
+     * @returns true - Success, false - Failure
+     */
     bool Load();
+
+    /**
+     * @brief Renderable Render implementation
+     *
+     */
     void Render();
 
 };

@@ -1,3 +1,14 @@
+/**
+ * @file buffer.hpp
+ * @author Jovan Ivosevic
+ * @brief GL Buffer abstraction
+ * @version 0.1
+ * @date 2022-10-09
+ *
+ * @copyright Copyright (c) 2022
+ *
+ */
+
 #pragma once
 #include <GL/glew.h>
 #include <iostream>
@@ -14,6 +25,15 @@ private:
 	unsigned mIndexCount;
 	unsigned mVertexCount;
 public:
-	Buffer(IBufferable& renderObject);
+	/**
+	 * @brief Ctor - buffers Bufferable Object data into GL
+	 *
+	 * @param bufferable Bufferable object
+	 */
+	Buffer(IBufferable& bufferable);
+	/**
+	 * @brief Renders the buffered object
+	 *
+	 */
 	void Render();
 };
