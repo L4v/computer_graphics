@@ -210,12 +210,20 @@ int main() {
         return -1;
     }
     
+    Model Spider("res/spider/spider.obj");
+    if (!Spider.Load()) {
+        std::cerr << "Failed to load model" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+
     Renderer Renderer = { 0 };
     Renderer.mFramebufferSize = glm::vec2(WindowWidth, WindowHeight);
     Renderer.mRenderables.push_back(&BasicCube);
     Renderer.mRenderables.push_back(&Amongus);
     Renderer.mRenderables.push_back(&Fox);
     Renderer.mRenderables.push_back(&Alduin);
+    Renderer.mRenderables.push_back(&Spider);
     Renderer.mCurrRenderable = Renderer.mRenderables[0];
     Renderer.mScalingFactor = 1.0f;
 
