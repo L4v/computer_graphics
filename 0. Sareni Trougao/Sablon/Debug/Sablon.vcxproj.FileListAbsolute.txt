@@ -1,0 +1,8 @@
+C:\Users\nastavnik\Desktop\RG\ANI\Sablon\Debug\glew32.dll
+C:\Users\nastavnik\Desktop\RG\ANI\Sablon\Debug\Sablon.exe
+C:\Users\nastavnik\Desktop\RG\ANI\Sablon\Debug\Sablon.pdb
+C:\Users\nastavnik\Desktop\RG\ANI\SareniTrougao\Sablon\Debug\glew32.dll
+C:\Users\nastavnik\Desktop\RG\ANI\SareniTrougao\Sablon\Debug\Sablon.exe
+C:\Users\nastavnik\Desktop\RG\ANI\SareniTrougao\Sablon\Debug\Sablon.pdb
+C:\Users\NTP-325-XXXXX\Desktop\Sablon\Debug\glew32.dll
+C:\Users\NTP-325-XXXXX\Desktop\Sablon\Debug\Sablon.exe

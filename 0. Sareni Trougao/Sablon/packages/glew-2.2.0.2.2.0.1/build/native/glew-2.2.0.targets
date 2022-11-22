@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+        ToolsVersion="15.0">
+
+	<ItemGroup>
+		<PropertyPageSchema Include="$(MSBuildThisFileDirectory)\glew-propertiesui.xml" />
+	</ItemGroup>
+
+	<PropertyGroup Condition="'$(GlewLinkage)' != 'static'">
+		<GlewLinkage>dynamic</GlewLinkage>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Platform)' == 'x64'">
+		<glewPlatform>x64</glewPlatform>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Platform)' != 'x64'">
+		<glewPlatform>Win32</glewPlatform>
+	</PropertyGroup>
+
+	<ItemDefinitionGroup>
+		<ClCompile>
+			<PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+			<AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+		</ClCompile>
+	</ItemDefinitionGroup>
+	<ItemDefinitionGroup Condition="'$(GlewLinkage)'=='static'">
+		<ClCompile>
+			<PreprocessorDefinitions>GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+		</ClCompile>
+	</ItemDefinitionGroup>
+	<!-- Linker settings -->
+	<ItemDefinitionGroup Condition="'$(GlewLinkage)'=='static'">
+		<Link>
+			<AdditionalDependencies>$(MSBuildThisFileDirectory)lib\Release\$(glewPlatform)\glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
+			<IgnoreSpecificDefaultLibraries>glew32s.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>	
+		</Link>
+	</ItemDefinitionGroup>
+	<ItemDefinitionGroup Condition="'$(GlewLinkage)'=='dynamic'">
+		<Link>
+			<AdditionalDependencies>$(MSBuildThisFileDirectory)lib\Release\$(glewPlatform)\glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+			<IgnoreSpecificDefaultLibraries>glew32.lib;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>	
+		</Link>
+	</ItemDefinitionGroup>
+
+	<!-- Copy dll redistributable -->
+	<ItemGroup Condition="'$(GlewLinkage)'=='dynamic'">
+    <Content Include="$(MSBuildThisFileDirectory)bin\Release\$(glewPlatform)\glew32.dll">
+      <Link>glew32.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Visible>False</Visible>
+    </Content>
+	</ItemGroup>
+	
+</Project>
