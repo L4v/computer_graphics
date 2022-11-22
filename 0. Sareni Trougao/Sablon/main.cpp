@@ -105,7 +105,7 @@ int main(void)
         glClearColor(0.5, 0.5, 0.5, 1.0); //Podesavanje boje pozadine: RGBA (R - Crvena, G - Zelena, B - Plava, A = neprovidno; Opseg od 0 do 1, gdje je 0 crno a 1 svijetlo)
         glClear(GL_COLOR_BUFFER_BIT);
 
-        //Unos od korisnika
+        //Unos od korisnika bez callback funckcije
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         {
             glfwSetWindowShouldClose(window, GL_TRUE);
