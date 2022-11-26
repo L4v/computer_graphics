@@ -21,6 +21,7 @@ Computer Graphics course material for the Faculty of Technical Sciences.
 - base: Contains the base code which can be expanded upon for projects and learning
 - demo: Contains a demo project showing off what's possible with OpenGL
 - week-x: Contains x week's material
+- additional_materials: Contains additional learning materials
 
 ## Environment
 > Note: If you wish to use other libraries, consult with Jovan Ivošević at ivosevic.jovan@uns.ac.rs.
