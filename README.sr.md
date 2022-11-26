@@ -21,6 +21,7 @@ Materijal za Računarsku grafiku na Fakultetu tehničkih nauka.
 - base: Osnovni kod, starter projekat
 - demo: Demo šta je moguće izvršiti u OpenGL-u posle polaganja predmeta
 - week-x: Materijal za nedelju x
+- additional_materials: Sadrži dodatne materijale za učenje
 
 ## Okruženje
 > Napomena: Ukoliko želite da koristite druge biblioteke i tehnologije, konsultujte se sa Jovan Ivošević na adresi ivosevic.jovan@uns.ac.rs.
