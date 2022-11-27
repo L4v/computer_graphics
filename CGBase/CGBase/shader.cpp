@@ -7,6 +7,30 @@ Shader::Shader(const std::string& vShaderPath, const std::string& fShaderPath) {
     mId = createBasicProgram(vs, fs);
 }
 
+void
+Shader::SetUniform4m(const std::string& uniform, const glm::mat4& m) const {
+    glUniformMatrix4fv(glGetUniformLocation(mId, uniform.c_str()), 1, GL_FALSE, &m[0][0]);
+}
+
+void
+Shader::SetModel(const glm::mat4& m) const {
+    SetUniform4m("uModel", m);
+}
+
+void
+Shader::SetView(const glm::mat4& m) const {
+    SetUniform4m("uView", m);
+}
+
+void Shader::SetProjection(const glm::mat4& m) const {
+    SetUniform4m("uProjection", m);
+}
+
+unsigned
+Shader::GetId() const {
+    return mId;
+}
+
 unsigned
 Shader::loadAndCompileShader(std::string filename, GLuint shaderType) {
     unsigned ShaderID = 0;
@@ -62,9 +86,4 @@ Shader::createBasicProgram(unsigned vShader, unsigned fShader) {
     glDeleteShader(fShader);
 
     return ProgramID;
-}
-
-unsigned
-Shader::GetId() const {
-    return mId;
 }
