@@ -1,0 +1,125 @@
+﻿  main.cpp
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\main.cpp(109,5): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\main.cpp(122,5): warning C4305: 'initializing': truncation from 'double' to 'float'
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\main.cpp(164,36): warning C4305: 'argument': truncation from 'double' to 'GLclampf'
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\main.cpp(167,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\main.cpp(168,24): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\main.cpp(174,37): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\main.cpp(201,83): warning C4244: 'argument': conversion from 'double' to 'T', possible loss of data
+          with
+          [
+              T=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\main.cpp(207,31): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\main.cpp(219,24): warning C4305: '+=': truncation from 'double' to 'float'
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\main.cpp(263,35): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\main.cpp(268,39): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  mesh.cpp
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\mesh.cpp(41,37): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\mesh.cpp(49,53): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\mesh.cpp(51,53): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\mesh.cpp(62,35): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\quaternion.inl(207,15): warning C4244: '=': conversion from 'double' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\quaternion.inl(186): message : while compiling class template member function 'void aiQuaterniont<float>::Interpolate(aiQuaterniont<float> &,const aiQuaterniont<float> &,const aiQuaterniont<float> &,TReal)'
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\anim.h(435): message : see reference to function template instantiation 'void aiQuaterniont<float>::Interpolate(aiQuaterniont<float> &,const aiQuaterniont<float> &,const aiQuaterniont<float> &,TReal)' being compiled
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\anim.h(107): message : see reference to class template instantiation 'aiQuaterniont<float>' being compiled
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\quaternion.inl(208,14): warning C4244: '=': conversion from 'double' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\quaternion.inl(209,61): warning C4244: '=': conversion from 'double' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\quaternion.inl(210,33): warning C4244: '=': conversion from 'double' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\vector3.inl(93,13): warning C4244: 'return': conversion from 'double' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\vector3.inl(92): message : while compiling class template member function 'TReal aiVector3t<TReal>::Length(void) const'
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\vector3.inl(98): message : see reference to function template instantiation 'TReal aiVector3t<TReal>::Length(void) const' being compiled
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\vector3.inl(142): message : while compiling class template member function 'bool aiVector3t<float>::operator ==(const aiVector3t<float> &) const'
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\anim.h(82): message : see reference to function template instantiation 'bool aiVector3t<float>::operator ==(const aiVector3t<float> &) const' being compiled
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\types.h(150): message : see reference to class template instantiation 'aiVector3t<float>' being compiled
+  model.cpp
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\quaternion.inl(207,15): warning C4244: '=': conversion from 'double' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\quaternion.inl(186): message : while compiling class template member function 'void aiQuaterniont<float>::Interpolate(aiQuaterniont<float> &,const aiQuaterniont<float> &,const aiQuaterniont<float> &,TReal)'
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\anim.h(435): message : see reference to function template instantiation 'void aiQuaterniont<float>::Interpolate(aiQuaterniont<float> &,const aiQuaterniont<float> &,const aiQuaterniont<float> &,TReal)' being compiled
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\anim.h(107): message : see reference to class template instantiation 'aiQuaterniont<float>' being compiled
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\quaternion.inl(208,14): warning C4244: '=': conversion from 'double' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\quaternion.inl(209,61): warning C4244: '=': conversion from 'double' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\quaternion.inl(210,33): warning C4244: '=': conversion from 'double' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\vector3.inl(93,13): warning C4244: 'return': conversion from 'double' to 'TReal', possible loss of data
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\vector3.inl(92): message : while compiling class template member function 'TReal aiVector3t<TReal>::Length(void) const'
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\vector3.inl(98): message : see reference to function template instantiation 'TReal aiVector3t<TReal>::Length(void) const' being compiled
+          with
+          [
+              TReal=float
+          ]
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\vector3.inl(142): message : while compiling class template member function 'bool aiVector3t<float>::operator ==(const aiVector3t<float> &) const'
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\anim.h(82): message : see reference to function template instantiation 'bool aiVector3t<float>::operator ==(const aiVector3t<float> &) const' being compiled
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\packages\Assimp.3.0.0\build\native\include\assimp\types.h(150): message : see reference to class template instantiation 'aiVector3t<float>' being compiled
+  renderable.cpp
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\CGBase\renderable.cpp(33,12): warning C4102: 'Renderable': unreferenced label
+  shader.cpp
+  Generating Code...
+  CGBase.vcxproj -> C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\x64\Debug\CGBase.exe

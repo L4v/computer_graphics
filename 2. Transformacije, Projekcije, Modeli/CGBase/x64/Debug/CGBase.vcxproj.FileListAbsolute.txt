@@ -1,0 +1,3 @@
+C:\Users\nedel\OneDrive\Desktop\kuca\computer_graphics-base\CGBase\x64\Debug\glew32.dll
+C:\Users\nedel\Desktop\RG\Primjer 3\x64\Debug\glew32.dll
+C:\Users\nedel\Repos\computer_graphics\2. Transformacije, Projekcije, Modeli\x64\Debug\glew32.dll
