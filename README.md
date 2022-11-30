@@ -28,6 +28,7 @@ Computer Graphics course material for the Faculty of Technical Sciences.
 - GLFW
 - GLEW
 - GLM
+- Assimp
 
 ## Installation and setup
 ### Windows
@@ -58,22 +59,22 @@ Packages might differ depending on your distro, if not listed, contact ivosevic.
 #### Arch based
 > Manjaro, EndeavourOS, etc...
 
-- To install GLM, GLFW and GLEW:
+- To install GLM, GLFW, GLEW and Assimp:
 ```bash
-sudo pacman -S glm glfw glew
+sudo pacman -S glm glfw glew assimp
 ```
 #### Debian based
 > Ubuntu, Pop, Deepin, Kali
 
 ```bash
-sudo apt install libglfw3 libglfw3-dev libglm-dev libglew-dev
+sudo apt install libglfw3 libglfw3-dev libglm-dev libglew-dev assimp
 ```
 
 #### Compiling and running
 You can use make, cmake or any other build tool, but for most purposes this command will suffice:
 ```bash
 # To compile (run this command inside your code dir, where all the .cpp and .hpp files are). NOTE: pkg-config is surrounded by backticks `, not by quotes '
-g++ -o <your_program_name> *.cpp `pkg-config --libs glfw3 glew` -ldl
+g++ -o <your_program_name> *.cpp `pkg-config --libs glfw3 glew assimp` -ldl
 # To run
 ./<your_program_name>
 ```
