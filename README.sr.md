@@ -11,7 +11,7 @@ Materijal za Računarsku grafiku na Fakultetu tehničkih nauka.
 		- [Windows](#windows)
 			- [Podešavanje Visual Studio-a](#podešavanje-visual-studio-a)
 			- [Base starter projekat](#base-starter-projekat)
-			- [### Napravite svoj projekat](#-napravite-svoj-projekat)
+			- [Napravite svoj projekat](#-napravite-svoj-projekat)
 		- [Linux](#linux)
 			- [Arch bazirani](#arch-bazirani)
 			- [Debian bazirani](#debian-bazirani)
@@ -28,6 +28,7 @@ Materijal za Računarsku grafiku na Fakultetu tehničkih nauka.
 - GLFW
 - GLEW
 - GLM
+- Assimp
 
 ## Instalacija i podešavanje
 ### Windows
@@ -58,22 +59,22 @@ Mogu postojati razlike u zavisnosti od distribucije koju koristite. Kontaktirajt
 #### Arch bazirani
 > Manjaro, EndeavourOS, etc...
 
-- Da bi instalirali GLM, GLFW i GLEW:
+- Da bi instalirali GLM, GLFW, GLEW i Assimp:
 ```bash
-sudo pacman -S glm glfw glew
+sudo pacman -S glm glfw glew assimp
 ```
 #### Debian bazirani
 > Ubuntu, Pop, Deepin, Kali
 
 ```bash
-sudo apt install libglfw3 libglfw3-dev libglm-dev libglew-dev
+sudo apt install libglfw3 libglfw3-dev libglm-dev libglew-dev assimp
 ```
 
 #### Kompajliranje i pokretanje
 Možete koristiti make, cmake ili bilo koji drugi alat, ali za većinu slučajeva sledeća komanda će biti dovljna:
 ```bash
 # To compile (run this command inside your code dir, where all the .cpp and .hpp files are). NOTE: pkg-config is surrounded by backticks `, not by quotes '
-g++ -o <your_program_name> *.cpp `pkg-config --libs glfw3 glew` -ldl
+g++ -o <your_program_name> *.cpp `pkg-config --libs glfw3 glew assimp` -ldl
 # To run
 ./<your_program_name>
 ```
