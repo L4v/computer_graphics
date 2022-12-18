@@ -1,2 +1,3 @@
-# base
-Contains the base code which can be expanded upon for projects and learning
+# Textures
+Texturing and mipmapping
+![screen](/imgs/scrn0.png)
