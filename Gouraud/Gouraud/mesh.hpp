@@ -13,7 +13,7 @@
 
 #include <assimp/scene.h>
 #include<vector>
-#include <GL/glew.h>;
+#include <GL/glew.h>
 
 class Mesh {
 public:

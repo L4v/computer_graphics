@@ -393,9 +393,9 @@ int main() {
         *   - Fox.Render()
         *
         */
-        glBindVertexArray(IcosahedronVAO);
-        glDrawArrays(GL_TRIANGLES, 0, IcosahedronVertices.size() / 3);
-        //Alduin.Render();
+        //glBindVertexArray(IcosahedronVAO);
+        //glDrawArrays(GL_TRIANGLES, 0, IcosahedronVertices.size() / 3);
+        Alduin.Render();
 
         DrawFloor(CubeVAO, GouraudShader);
 
