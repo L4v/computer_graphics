@@ -1,10 +1,29 @@
 #include "shader.hpp"
 
-
 Shader::Shader(const std::string& vShaderPath, const std::string& fShaderPath) {
     unsigned vs = loadAndCompileShader(vShaderPath, GL_VERTEX_SHADER);
     unsigned fs = loadAndCompileShader(fShaderPath, GL_FRAGMENT_SHADER);
     mId = createBasicProgram(vs, fs);
+}
+
+unsigned
+Shader::GetId() const {
+    return mId;
+}
+
+void
+Shader::SetUniform1i(const std::string& uniform, int v) const {
+    glUniform1i(glGetUniformLocation(mId, uniform.c_str()), v);
+}
+
+void
+Shader::SetUniform1f(const std::string& uniform, float v) const {
+    glUniform1f(glGetUniformLocation(mId, uniform.c_str()), v);
+}
+
+void
+Shader::SetUniform3f(const std::string& uniform, const glm::vec3& v) const {
+    glUniform3f(glGetUniformLocation(mId, uniform.c_str()), v.x, v.y, v.z);
 }
 
 void
@@ -24,11 +43,6 @@ Shader::SetView(const glm::mat4& m) const {
 
 void Shader::SetProjection(const glm::mat4& m) const {
     SetUniform4m("uProjection", m);
-}
-
-unsigned
-Shader::GetId() const {
-    return mId;
 }
 
 unsigned

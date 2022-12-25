@@ -11,12 +11,15 @@
 
 #pragma once
 
-#include <GL/glew.h>
 #include <assimp/scene.h>
 #include<vector>
+#include <GL/glew.h>;
 
 class Mesh {
 public:
+    std::vector<unsigned> mIndices;
+    std::vector<float> mVertices;
+
     /**
      * @brief Ctor - buffers mesh data
      *
@@ -25,27 +28,19 @@ public:
      * @param resPath - Resource relative path. For loading textures, etc...
      * 
      */
-    Mesh(const aiMesh* mesh, aiMaterial* MeshMaterial, const std::string& resPath);
+    Mesh(const aiMesh* mesh);
 
     /**
-     * @brief Renders the mesh
+     * @brief Renders the current mesh
      *
      */
     void Render() const;
+
 private:
     unsigned mVAO;
     unsigned mVBO;
     unsigned mEBO;
-    unsigned mIndicesCount;
-    unsigned mVerticesCount;
-
-    /**
-     * @brief Buffers mesh data into GL
-     * 
-     * @param mesh Assimp mesh struct
-     * @param MeshMaterial Assimp material struct
-     * @param resPath Resource path, used for loading textures
-     * 
-     */
-    void processMesh(const aiMesh* mesh, aiMaterial* MeshMaterial, const std::string& resPath);
+    unsigned mVertexCount;
+    unsigned mIndexCount;
+    void processMesh(const aiMesh* mesh);
 };

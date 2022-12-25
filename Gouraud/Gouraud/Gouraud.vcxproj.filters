@@ -18,6 +18,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -27,20 +30,32 @@
     <ClCompile Include="model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="icosahedron.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="shaders\basic.vert" />
-    <None Include="shaders\basic.frag" />
+    <None Include="shaders\color.vert" />
+    <None Include="shaders\color.frag" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="camera.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="shader.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="model.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mesh.hpp">
+    <ClInclude Include="icosahedron.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
