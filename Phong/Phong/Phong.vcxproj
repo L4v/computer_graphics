@@ -21,16 +21,16 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{4728da93-df0b-4949-bb63-da09dfcdb83b}</ProjectGuid>
-    <RootNamespace>Gouraud</RootNamespace>
+    <ProjectGuid>{536350ac-41d4-4023-83da-5db43f0f9697}</ProjectGuid>
+    <RootNamespace>Phong</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -143,24 +143,22 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="camera.cpp" />
-    <ClCompile Include="icosahedron.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="model.cpp" />
     <ClCompile Include="shader.cpp" />
+    <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="shaders\color.frag" />
-    <None Include="shaders\color.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="camera.hpp" />
-    <ClInclude Include="icosahedron.hpp" />
     <ClInclude Include="mesh.hpp" />
     <ClInclude Include="model.hpp" />
     <ClInclude Include="shader.hpp" />
     <ClInclude Include="stb_image.h" />
+    <ClInclude Include="texture.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -16,7 +16,8 @@ Model::Load() {
     }
     mMeshes.reserve(Scene->mNumMeshes);
     for(unsigned MeshIdx = 0; MeshIdx < Scene->mNumMeshes; ++MeshIdx) {
-        Mesh CurrMesh(Scene->mMeshes[MeshIdx]);
+        aiMesh* CurrAIMesh = Scene->mMeshes[MeshIdx];
+        Mesh CurrMesh(CurrAIMesh, Scene->mMaterials[CurrAIMesh->mMaterialIndex], mDirectory);
         mMeshes.push_back(CurrMesh);
 
     }

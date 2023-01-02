@@ -18,44 +18,42 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="icosahedron.cpp">
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="shaders\color.vert" />
-    <None Include="shaders\color.frag" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="camera.hpp">
+    <ClInclude Include="stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="shader.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stb_image.h">
+    <ClInclude Include="model.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="mesh.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="model.hpp">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="icosahedron.hpp">
+    <ClInclude Include="texture.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

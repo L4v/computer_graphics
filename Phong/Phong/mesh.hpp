@@ -13,7 +13,9 @@
 
 #include <assimp/scene.h>
 #include<vector>
-#include <GL/glew.h>;
+#include <GL/glew.h>
+#include <iostream>
+#include "texture.hpp"
 
 class Mesh {
 public:
@@ -28,7 +30,7 @@ public:
      * @param resPath - Resource relative path. For loading textures, etc...
      * 
      */
-    Mesh(const aiMesh* mesh);
+    Mesh(const aiMesh* mesh, const aiMaterial* material, const std::string& resPath);
 
     /**
      * @brief Renders the current mesh
@@ -42,5 +44,8 @@ private:
     unsigned mEBO;
     unsigned mVertexCount;
     unsigned mIndexCount;
-    void processMesh(const aiMesh* mesh);
+    unsigned mDiffuseTexture;
+    unsigned mSpecularTexture;
+    unsigned loadMeshTexture(const aiMaterial* material, const std::string& resPath, aiTextureType type);
+    void processMesh(const aiMesh* mesh, const aiMaterial* material, const std::string& resPath);
 };
